@@ -863,3 +863,606 @@ footer p {
     height: 43px;
   }
 }
+/* =========================================================
+   OSHAGH — GAME STYLE
+========================================================= */
+
+.game-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+#gameArea {
+  width: 100%;
+}
+
+.game-board {
+  position: relative;
+  width: 100%;
+  height: 560px;
+  overflow: hidden;
+  border-radius: 28px;
+  background:
+    linear-gradient(
+      180deg,
+      #eef8fc 0%,
+      #d9edf5 58%,
+      #c7e1eb 100%
+    );
+  border: 1px solid rgba(54,136,190,.18);
+  box-shadow:
+    0 20px 50px rgba(30,90,120,.13);
+  user-select: none;
+  touch-action: none;
+}
+
+/* زمین */
+
+.game-board::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 65px;
+  background:
+    linear-gradient(
+      180deg,
+      #b7d6df,
+      #9fc4cf
+    );
+  border-top: 2px solid rgba(40,100,120,.12);
+  z-index: 1;
+}
+
+
+/* =========================================================
+   SCORE
+========================================================= */
+
+.game-score {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  z-index: 30;
+
+  padding: 10px 18px;
+
+  border-radius: 14px;
+
+  background: rgba(255,255,255,.86);
+  backdrop-filter: blur(10px);
+
+  color: #326b88;
+  font-size: 15px;
+  font-weight: 600;
+
+  box-shadow:
+    0 8px 25px rgba(30,80,100,.1);
+}
+
+.game-score strong {
+  margin-right: 7px;
+  color: #3688be;
+  font-size: 21px;
+}
+
+
+/* =========================================================
+   TARGET WALL
+========================================================= */
+
+.target-wall {
+  position: absolute;
+
+  right: 9%;
+  top: 105px;
+
+  width: 300px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 7px;
+
+  padding: 12px;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      #b76d4c 0px,
+      #b76d4c 34px,
+      #8f5039 35px,
+      #8f5039 38px
+    );
+
+  border: 7px solid #75412f;
+
+  border-radius: 7px;
+
+  box-shadow:
+    8px 12px 0 rgba(70,40,30,.15),
+    0 20px 35px rgba(50,70,80,.18);
+
+  z-index: 8;
+}
+
+
+/* =========================================================
+   TARGETS = خود اسم‌ها
+========================================================= */
+
+.target {
+  position: relative;
+
+  min-height: 62px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #d48761,
+      #b96548
+    );
+
+  border: 2px solid #8e4c37;
+
+  border-radius: 5px;
+
+  color: #fff;
+
+  font-size: 19px;
+  font-weight: 800;
+
+  text-shadow:
+    0 2px 2px rgba(70,30,20,.35);
+
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.16),
+    inset 0 -3px 0 rgba(70,30,20,.16);
+
+  transition:
+    transform .18s ease,
+    filter .18s ease,
+    opacity .25s ease;
+}
+
+
+/* اسم */
+
+.target span {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* لرزش خیلی کم هدف‌ها */
+
+.target:nth-child(1) {
+  transform: rotate(-1deg);
+}
+
+.target:nth-child(2) {
+  transform: rotate(1deg);
+}
+
+.target:nth-child(3) {
+  transform: rotate(1deg);
+}
+
+.target:nth-child(4) {
+  transform: rotate(-1deg);
+}
+
+
+/* برخورد */
+
+.target.hit {
+  animation: targetHit .35s ease;
+  filter: brightness(1.25);
+}
+
+
+@keyframes targetHit {
+
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.12) rotate(0deg);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+
+}
+
+
+/* =========================================================
+   SLINGSHOT
+========================================================= */
+
+.slingshot {
+  position: absolute;
+
+  left: 18%;
+  bottom: 74px;
+
+  width: 78px;
+  height: 125px;
+
+  z-index: 15;
+
+  transform: translateX(-50%);
+}
+
+
+/* پایه */
+
+.slingshot-base {
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  width: 20px;
+  height: 86px;
+
+  transform:
+    translateX(-50%)
+    rotate(7deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      #633e28,
+      #8a5737,
+      #5c3825
+    );
+
+  border-radius: 10px;
+
+  box-shadow:
+    4px 5px 8px rgba(40,30,20,.25);
+}
+
+
+/* دو شاخه */
+
+.slingshot-arm {
+  position: absolute;
+
+  bottom: 63px;
+
+  width: 18px;
+  height: 73px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #5e3926,
+      #95603d,
+      #5b3524
+    );
+
+  border-radius: 10px;
+
+  transform-origin: bottom center;
+
+  box-shadow:
+    3px 4px 7px rgba(40,30,20,.22);
+}
+
+
+.slingshot-arm.left {
+  left: 8px;
+  transform: rotate(-27deg);
+}
+
+
+.slingshot-arm.right {
+  right: 8px;
+  transform: rotate(27deg);
+}
+
+
+/* کش */
+
+.slingshot-band {
+  position: absolute;
+
+  left: 50%;
+  bottom: 101px;
+
+  width: 5px;
+  height: 78px;
+
+  transform-origin: center center;
+
+  background:
+    #3e2d27;
+
+  border-radius: 10px;
+
+  z-index: 20;
+}
+
+
+/* =========================================================
+   PROJECTILE / STONE
+========================================================= */
+
+#gameProjectile {
+  position: absolute;
+
+  left: 18%;
+  top: calc(100% - 165px);
+
+  width: 34px;
+  height: 34px;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #d8d8d8 0%,
+      #888 35%,
+      #4b4b4b 100%
+    );
+
+  border: 2px solid #3d3d3d;
+
+  box-shadow:
+    inset -4px -5px 7px rgba(0,0,0,.35),
+    3px 5px 8px rgba(0,0,0,.25);
+
+  cursor: grab;
+
+  z-index: 25;
+
+  touch-action: none;
+}
+
+
+#gameProjectile:active,
+#gameProjectile.dragging {
+  cursor: grabbing;
+}
+
+
+/* سنگ کوچک‌تر از هدف */
+
+#gameProjectile span {
+  display: none;
+}
+
+
+/* =========================================================
+   GAME MESSAGE
+========================================================= */
+
+.game-message {
+  position: absolute;
+
+  left: 50%;
+  bottom: 20px;
+
+  transform: translateX(-50%);
+
+  z-index: 35;
+
+  padding: 8px 18px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.78);
+
+  color: #477287;
+
+  font-size: 13px;
+
+  backdrop-filter: blur(8px);
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   +1
+========================================================= */
+
+.score-pop {
+  position: absolute;
+
+  left: 50%;
+  top: 0;
+
+  transform: translate(-50%, -50%);
+
+  color: #fff;
+
+  font-size: 25px;
+  font-weight: 900;
+
+  text-shadow:
+    0 2px 5px rgba(0,0,0,.35);
+
+  pointer-events: none;
+
+  z-index: 50;
+
+  animation:
+    scoreFloat 2s ease forwards;
+}
+
+
+@keyframes scoreFloat {
+
+  0% {
+    opacity: 0;
+    transform:
+      translate(-50%, 10px)
+      scale(.7);
+  }
+
+  15% {
+    opacity: 1;
+    transform:
+      translate(-50%, -5px)
+      scale(1.1);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%, -55px)
+      scale(1);
+  }
+
+}
+
+
+/* =========================================================
+   STAR
+========================================================= */
+
+.target-star {
+  position: absolute;
+
+  right: -8px;
+  top: -12px;
+
+  color: #ffd35a;
+
+  font-size: 23px;
+
+  z-index: 60;
+
+  filter:
+    drop-shadow(
+      0 2px 3px rgba(0,0,0,.25)
+    );
+
+  animation:
+    starPop .35s ease;
+}
+
+
+@keyframes starPop {
+
+  0% {
+    transform: scale(0);
+  }
+
+  70% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .game-board {
+    height: 500px;
+    border-radius: 20px;
+  }
+
+
+  .target-wall {
+    right: 4%;
+    top: 95px;
+
+    width: 220px;
+
+    padding: 8px;
+
+    gap: 5px;
+  }
+
+
+  .target {
+    min-height: 53px;
+
+    font-size: 15px;
+  }
+
+
+  .slingshot {
+    left: 18%;
+    bottom: 70px;
+
+    transform:
+      translateX(-50%)
+      scale(.85);
+
+    transform-origin:
+      bottom center;
+  }
+
+
+  #gameProjectile {
+    width: 31px;
+    height: 31px;
+  }
+
+
+  .game-score {
+    top: 15px;
+    left: 15px;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 430px) {
+
+  .game-board {
+    height: 460px;
+  }
+
+
+  .target-wall {
+    right: 3%;
+
+    width: 185px;
+
+    top: 90px;
+  }
+
+
+  .target {
+    min-height: 47px;
+    font-size: 13px;
+  }
+
+
+  .game-message {
+    font-size: 11px;
+  }
+
+}
