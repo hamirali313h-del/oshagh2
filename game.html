@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <title>عشاق | رمی جقرات</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="game.css">
+</head>
+
+<body>
+
+  <div class="game-page">
+
+    <header class="game-header">
+
+      <a href="index.html#games" class="back-button">
+        ← بازگشت
+      </a>
+
+      <div class="game-title">
+        <span>عشاق</span>
+        <h1>رمی جقرات</h1>
+      </div>
+
+      <div class="score-box">
+        امتیاز
+        <strong id="score">0</strong>
+      </div>
+
+    </header>
+
+
+    <main class="game-container">
+
+      <div class="game-help">
+        سنگ را بکش و رها کن
+      </div>
+
+
+      <div id="game">
+
+        <canvas id="gameCanvas"></canvas>
+
+      </div>
+
+
+      <div class="game-bottom">
+
+        <button id="resetGame">
+          شروع دوباره
+        </button>
+
+        <span id="gameMessage">
+          برای شروع، سنگ را بکش
+        </span>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <script src="game.js"></script>
+
+</body>
+</html>
