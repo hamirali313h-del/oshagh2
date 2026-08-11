@@ -1,6 +1,6 @@
 /* =========================================================
-   OSHAGH WEBSITE - MAIN SCRIPT
-   نسخه اصلاح‌شده
+   OSHAGH — MAIN SCRIPT
+   Navigation + Game + Music
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -20,17 +20,95 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     PREVENT REFRESH FROM RESTORING OLD SCROLL POSITION
+     REFRESH → TOP
   ======================================================= */
 
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
   }
 
-  window.addEventListener("load", () => {
-    if (!window.location.hash) {
-      window.scrollTo(0, 0);
-    }
+  if (!window.location.hash) {
+    window.scrollTo(0, 0);
+  }
+
+
+  /* =======================================================
+     GAME ELEMENTS
+  ======================================================= */
+
+  const gameBoard = document.getElementById("gameBoard");
+  const projectile = document.getElementById("gameProjectile");
+  const playGameBtn = document.getElementById("playGameBtn");
+  const gameScore = document.getElementById("gameScore");
+  const gameMessage = document.getElementById("gameMessage");
+
+  const playerNameInput = document.getElementById("playerName");
+  const secretWordInput = document.getElementById("secretWord");
+  const enterGameBtn = document.getElementById("enterGame");
+  const loginError = document.getElementById("loginError");
+  const gameModal = document.getElementById("gameModal");
+  const closeGame = document.getElementById("closeGame");
+
+  const slingshot = document.getElementById("slingshot");
+  const slingBand = document.getElementById("slingBand");
+
+
+  /* =======================================================
+     GAME STATE
+  ======================================================= */
+
+  let score = 0;
+
+  let dragging = false;
+
+  let flying = false;
+
+  let animationFrame = null;
+
+  let lastTime = 0;
+
+  let pointerId = null;
+
+  let ballX = 0;
+  let ballY = 0;
+
+  let baseX = 0;
+  let baseY = 0;
+
+  let dragX = 0;
+  let dragY = 0;
+
+  let velocityX = 0;
+  let velocityY = 0;
+
+  let rotation = 0;
+
+  const MAX_DRAG = 115;
+
+  const POWER = 5.2;
+
+  const GRAVITY = 720;
+
+  const MAX_SPEED = 1150;
+
+
+  /* =======================================================
+     TARGETS
+  ======================================================= */
+
+  const targets =
+    document.querySelectorAll(".target");
+
+
+  targets.forEach(target => {
+
+    const name =
+      target.dataset.name ||
+      target.textContent.trim();
+
+    target.innerHTML =
+      `<span>${name}</span>`;
+
   });
 
 
@@ -38,29 +116,20 @@ document.addEventListener("DOMContentLoaded", () => {
      GAME MODAL
   ======================================================= */
 
-  const gameModal = document.getElementById("gameModal");
-  const playGameBtn = document.getElementById("playGameBtn");
-  const closeGameBtn = document.getElementById("closeGame");
-  const enterGameBtn = document.getElementById("enterGame");
-
-  const playerNameInput = document.getElementById("playerName");
-  const secretWordInput = document.getElementById("secretWord");
-  const loginError = document.getElementById("loginError");
-
-
   function openGameModal() {
 
-    if (!gameModal) return;
+    if (!gameModal) {
+      startGame();
+      return;
+    }
 
     gameModal.classList.add("show");
 
-    setTimeout(() => {
-
-      if (playerNameInput) {
+    if (playerNameInput) {
+      setTimeout(() => {
         playerNameInput.focus();
-      }
-
-    }, 150);
+      }, 100);
+    }
   }
 
 
@@ -86,9 +155,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  if (closeGameBtn) {
+  if (closeGame) {
 
-    closeGameBtn.addEventListener(
+    closeGame.addEventListener(
       "click",
       closeGameModal
     );
@@ -112,18 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  document.addEventListener(
-    "keydown",
-    event => {
-
-      if (event.key === "Escape") {
-        closeGameModal();
-      }
-
-    }
-  );
-
-
   /* =======================================================
      GAME LOGIN
   ======================================================= */
@@ -139,8 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ? playerNameInput.value.trim()
             : "";
 
-
-        const word =
+        const secret =
           secretWordInput
             ? secretWordInput.value.trim()
             : "";
@@ -157,11 +213,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        if (word !== "یاریکون") {
+        if (secret !== "یاریکون") {
 
           if (loginError) {
             loginError.textContent =
-              "عبارت واردشده درست نیست.";
+              "عبارت ورود صحیح نیست.";
           }
 
           return;
@@ -176,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         closeGameModal();
 
-        startGame(name);
+        startGame();
 
       }
     );
@@ -185,135 +241,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     GAME
+     GAME POSITION
   ======================================================= */
 
-  const gameArea =
-    document.getElementById("gameArea");
+  function calculateBasePosition() {
 
-  const gameBoard =
-    document.getElementById("gameBoard");
+    if (!gameBoard) return;
 
-  const projectile =
-    document.getElementById("gameProjectile");
-
-  const scoreElement =
-    document.getElementById("gameScore");
-
-  const restartGameBtn =
-    document.getElementById("restartGame");
-
-
-  let score = 0;
-
-  let dragging = false;
-
-  let gameRunning = false;
-
-  let animationFrame = null;
-
-  let pointerId = null;
-
-  let dragX = 0;
-
-  let dragY = 0;
-
-  let velocityX = 0;
-
-  let velocityY = 0;
-
-  let ballX = 0;
-
-  let ballY = 0;
-
-  let baseX = 0;
-
-  let baseY = 0;
-
-  let lastTime = 0;
-
-  let hitTargets = new Set();
-
-
-  const GRAVITY = 720;
-
-  const POWER = 5.2;
-
-  const MAX_DRAG = 115;
-
-
-  /* -------------------------------------------------------
-     GAME POSITION
-  ------------------------------------------------------- */
-
-  function getBasePosition() {
-
-    if (!gameBoard || !projectile) {
-      return {
-        x: 0,
-        y: 0
-      };
-    }
-
-
-    const boardRect =
-      gameBoard.getBoundingClientRect();
-
-    const ballRect =
-      projectile.getBoundingClientRect();
-
-
-    return {
-
-      x:
-        ballRect.left -
-        boardRect.left +
-        ballRect.width / 2,
-
-      y:
-        ballRect.top -
-        boardRect.top +
-        ballRect.height / 2
-
-    };
-  }
-
-
-  function resetProjectilePosition() {
-
-    if (!projectile || !gameBoard) {
-      return;
-    }
-
-
-    const boardWidth =
+    const width =
       gameBoard.clientWidth;
 
-    const boardHeight =
+    const height =
       gameBoard.clientHeight;
 
 
     /*
-      تیرکمان در سمت چپ قرار دارد.
+      تیرکمان سمت چپ
     */
 
     baseX =
       Math.max(
-        85,
-        Math.min(
-          150,
-          boardWidth * 0.20
-        )
+        100,
+        width * 0.18
       );
 
 
     baseY =
-      boardHeight - 105;
+      height * 0.73;
 
 
     ballX = baseX;
     ballY = baseY;
 
+    renderBall();
+
+  }
+
+
+  /* =======================================================
+     RENDER BALL
+  ======================================================= */
+
+  function renderBall() {
+
+    if (!projectile) return;
 
     projectile.style.left =
       `${ballX}px`;
@@ -325,133 +296,67 @@ document.addEventListener("DOMContentLoaded", () => {
       "auto";
 
     projectile.style.transform =
-      "translate(-50%, -50%)";
-
-
-    projectile.style.transition =
-      "none";
-
-
-    projectile.style.visibility =
-      "visible";
-  }
-
-
-  /* -------------------------------------------------------
-     GAME START
-  ------------------------------------------------------- */
-
-  function startGame(name) {
-
-    if (!gameArea || !gameBoard) {
-      return;
-    }
-
-
-    gameArea.classList.add("show");
-
-
-    /*
-      بازی را کمی بعد از باز شدن اجرا می‌کنیم
-      تا ابعاد Board درست محاسبه شود.
-    */
-
-    requestAnimationFrame(() => {
-
-      resetGame();
-
-      const playerNameElement =
-        document.getElementById(
-          "gamePlayerName"
-        );
-
-
-      if (playerNameElement) {
-
-        playerNameElement.textContent =
-          name;
-
-      }
-
-    });
-
-
-    gameArea.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
+      `translate(-50%, -50%) rotate(${rotation}deg)`;
 
   }
 
 
-  /* -------------------------------------------------------
-     RESET GAME
-  ------------------------------------------------------- */
+  /* =======================================================
+     RESET SLINGSHOT
+  ======================================================= */
 
-  function resetGame() {
+  function resetSlingshot() {
 
-    if (!gameBoard || !projectile) {
-      return;
+    dragX = 0;
+    dragY = 0;
+
+    if (slingBand) {
+
+      slingBand.style.transform =
+        "translate(0, 0)";
+
     }
 
+    if (slingshot) {
 
-    if (animationFrame) {
-
-      cancelAnimationFrame(
-        animationFrame
+      slingshot.classList.remove(
+        "pulling"
       );
 
-      animationFrame = null;
     }
 
+  }
 
-    score = 0;
+
+  /* =======================================================
+     RESET PROJECTILE
+  ======================================================= */
+
+  function resetProjectile() {
+
+    flying = false;
 
     dragging = false;
 
-    gameRunning = false;
-
     velocityX = 0;
-
     velocityY = 0;
 
-    dragX = 0;
+    rotation = 0;
 
-    dragY = 0;
+    calculateBasePosition();
 
-    hitTargets.clear();
+    resetSlingshot();
 
+    if (projectile) {
 
-    updateScore();
+      projectile.style.visibility =
+        "visible";
 
-    resetProjectilePosition();
+    }
 
+    if (gameMessage) {
 
-    document
-      .querySelectorAll(".target")
-      .forEach(target => {
-
-        target.classList.remove(
-          "hit"
-        );
-
-        target.style.opacity = "1";
-
-        target.style.pointerEvents =
-          "auto";
-
-      });
-
-
-    const message =
-      document.getElementById(
-        "gameMessage"
-      );
-
-
-    if (message) {
-
-      message.textContent =
+      gameMessage.textContent =
         "سنگ را بکش و رها کن";
 
     }
@@ -459,377 +364,62 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  /* -------------------------------------------------------
-     SCORE
-  ------------------------------------------------------- */
+  /* =======================================================
+     START GAME
+  ======================================================= */
 
-  function updateScore() {
+  function startGame() {
 
-    if (scoreElement) {
-      scoreElement.textContent =
-        score;
-    }
+    if (!gameBoard) return;
 
-  }
+    score = 0;
 
-
-  /* -------------------------------------------------------
-     SCORE POP
-  ------------------------------------------------------- */
-
-  function showScore(target) {
-
-    if (!target) return;
-
-
-    const pop =
-      document.createElement(
-        "div"
-      );
-
-
-    pop.className =
-      "score-pop";
-
-
-    pop.textContent =
-      "+1";
-
-
-    target.appendChild(pop);
-
-
-    const star =
-      document.createElement(
-        "span"
-      );
-
-
-    star.textContent =
-      "★";
-
-
-    star.style.position =
-      "absolute";
-
-    star.style.right =
-      "-12px";
-
-    star.style.top =
-      "-15px";
-
-    star.style.color =
-      "#3688be";
-
-    star.style.fontSize =
-      "16px";
-
-
-    target.appendChild(star);
-
-
-    setTimeout(() => {
-
-      pop.remove();
-
-      star.remove();
-
-    }, 2000);
-
-  }
-
-
-  /* -------------------------------------------------------
-     HIT TARGET
-  ------------------------------------------------------- */
-
-  function hitTarget(target) {
-
-    if (!target) return;
-
-
-    if (hitTargets.has(target)) {
-      return;
+    if (gameScore) {
+      gameScore.textContent = "0";
     }
 
 
-    hitTargets.add(target);
-
-
-    target.classList.add(
-      "hit"
-    );
-
-
-    score += 1;
-
-    updateScore();
-
-    showScore(target);
-
-
-    const message =
-      document.getElementById(
-        "gameMessage"
-      );
-
-
-    if (message) {
-
-      message.textContent =
-        "هدف زده شد! +1";
-
-    }
-
-
-    setTimeout(() => {
+    targets.forEach(target => {
 
       target.classList.remove(
         "hit"
       );
 
-    }, 350);
-
-  }
-
-
-  /* -------------------------------------------------------
-     TARGET COLLISION
-  ------------------------------------------------------- */
-
-  function checkCollision() {
-
-    if (!projectile || !gameBoard) {
-      return false;
-    }
-
-
-    const ballRect =
-      projectile.getBoundingClientRect();
-
-
-    const targets =
-      document.querySelectorAll(
-        ".target"
-      );
-
-
-    let collided = false;
-
-
-    targets.forEach(target => {
-
-      if (
-        hitTargets.has(target)
-      ) {
-        return;
-      }
-
-
-      const targetRect =
-        target.getBoundingClientRect();
-
-
-      const collision =
-
-        ballRect.left <
-        targetRect.right &&
-
-        ballRect.right >
-        targetRect.left &&
-
-        ballRect.top <
-        targetRect.bottom &&
-
-        ballRect.bottom >
-        targetRect.top;
-
-
-      if (collision) {
-
-        hitTarget(target);
-
-        collided = true;
-
-      }
+      target.style.opacity =
+        "1";
 
     });
 
 
-    return collided;
-  }
-
-
-  /* -------------------------------------------------------
-     DRAW DRAG POSITION
-  ------------------------------------------------------- */
-
-  function updateDragPosition(
-    clientX,
-    clientY
-  ) {
-
-    if (
-      !gameBoard ||
-      !projectile ||
-      gameRunning
-    ) {
-      return;
-    }
-
-
-    const boardRect =
-      gameBoard.getBoundingClientRect();
-
-
-    let pointerX =
-      clientX -
-      boardRect.left;
-
-
-    let pointerY =
-      clientY -
-      boardRect.top;
-
-
-    /*
-      اختلاف موقعیت اشاره‌گر
-      نسبت به نقطه شروع تیرکمان
-    */
-
-    let dx =
-      pointerX - baseX;
-
-    let dy =
-      pointerY - baseY;
-
-
-    /*
-      برای تیرکمان:
-      سنگ فقط می‌تواند اطراف نقطه شروع
-      کشیده شود.
-    */
-
-    const distance =
-      Math.sqrt(
-        dx * dx +
-        dy * dy
-      );
-
-
-    if (
-      distance > MAX_DRAG
-    ) {
-
-      const scale =
-        MAX_DRAG /
-        distance;
-
-
-      dx *= scale;
-      dy *= scale;
-
-    }
-
-
-    /*
-      سنگ را دقیقاً در نقطه کشیده‌شده
-      قرار می‌دهیم.
-    */
-
-    ballX =
-      baseX + dx;
-
-    ballY =
-      baseY + dy;
-
-
-    projectile.style.left =
-      `${ballX}px`;
-
-    projectile.style.top =
-      `${ballY}px`;
-
-    projectile.style.bottom =
-      "auto";
-
-
-    projectile.style.transform =
-      "translate(-50%, -50%)";
-
-
-    dragX = dx;
-
-    dragY = dy;
-
-
-    /*
-      کشش تیرکمان
-      با CSS
-    */
-
-    drawSlingshot(
-      dx,
-      dy
+    gameBoard.classList.add(
+      "game-active"
     );
 
-  }
+
+    requestAnimationFrame(() => {
+      resetProjectile();
+    });
 
 
-  /* -------------------------------------------------------
-     SLINGSHOT VISUAL
-  ------------------------------------------------------- */
-
-  function drawSlingshot(
-    dx,
-    dy
-  ) {
-
-    const leftBand =
-      document.getElementById(
-        "slingLeft"
-      );
-
-    const rightBand =
-      document.getElementById(
-        "slingRight"
-      );
-
-
-    if (
-      !leftBand ||
-      !rightBand
-    ) {
-      return;
-    }
-
-
-    leftBand.style.transform =
-      `translate(${dx}px, ${dy}px)`;
-
-    rightBand.style.transform =
-      `translate(${dx}px, ${dy}px)`;
+    gameBoard.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
 
   }
 
 
-  /* -------------------------------------------------------
+  /* =======================================================
      POINTER DOWN
-  ------------------------------------------------------- */
+  ======================================================= */
 
-  if (
-    projectile &&
-    gameBoard
-  ) {
+  if (projectile) {
 
     projectile.addEventListener(
       "pointerdown",
       event => {
 
-        if (gameRunning) {
-          return;
-        }
-
+        if (flying) return;
 
         dragging = true;
 
@@ -842,15 +432,13 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        projectile.classList.add(
-          "dragging"
-        );
+        if (slingshot) {
 
+          slingshot.classList.add(
+            "pulling"
+          );
 
-        updateDragPosition(
-          event.clientX,
-          event.clientY
-        );
+        }
 
 
         event.preventDefault();
@@ -859,23 +447,20 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        POINTER MOVE
-    ----------------------------------------------------- */
+    ===================================================== */
 
     projectile.addEventListener(
       "pointermove",
       event => {
 
-        if (
-          !dragging ||
-          gameRunning
-        ) {
+        if (!dragging || flying) {
           return;
         }
 
 
-        updateDragPosition(
+        updateDrag(
           event.clientX,
           event.clientY
         );
@@ -887,9 +472,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        POINTER UP
-    ----------------------------------------------------- */
+    ===================================================== */
 
     projectile.addEventListener(
       "pointerup",
@@ -903,11 +488,6 @@ document.addEventListener("DOMContentLoaded", () => {
         dragging = false;
 
 
-        projectile.classList.remove(
-          "dragging"
-        );
-
-
         try {
 
           projectile.releasePointerCapture(
@@ -917,49 +497,20 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (_) {}
 
 
-        /*
-          اگر تقریباً نکشیده شده،
-          پرتاب نکن.
-        */
+        if (slingshot) {
 
-        const power =
-          Math.sqrt(
-            dragX * dragX +
-            dragY * dragY
+          slingshot.classList.remove(
+            "pulling"
           );
-
-
-        if (power < 12) {
-
-          resetProjectilePosition();
-
-          return;
 
         }
 
 
-        /*
-          جهت پرتاب دقیقاً خلاف
-          جهت کشیدن سنگ است.
-        */
-
-        velocityX =
-          -dragX * POWER;
-
-
-        velocityY =
-          -dragY * POWER;
-
-
-        launchProjectile();
+        launch();
 
       }
     );
 
-
-    /* -----------------------------------------------------
-       POINTER CANCEL
-    ----------------------------------------------------- */
 
     projectile.addEventListener(
       "pointercancel",
@@ -967,11 +518,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         dragging = false;
 
-        projectile.classList.remove(
-          "dragging"
-        );
-
-        resetProjectilePosition();
+        resetProjectile();
 
       }
     );
@@ -979,36 +526,158 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  /* -------------------------------------------------------
-     LAUNCH
-  ------------------------------------------------------- */
+  /* =======================================================
+     UPDATE DRAG
+  ======================================================= */
 
-  function launchProjectile() {
+  function updateDrag(
+    clientX,
+    clientY
+  ) {
 
-    if (
-      gameRunning ||
-      !projectile ||
-      !gameBoard
-    ) {
-      return;
+    if (!gameBoard) return;
+
+
+    const rect =
+      gameBoard.getBoundingClientRect();
+
+
+    let dx =
+      clientX -
+      rect.left -
+      baseX;
+
+
+    let dy =
+      clientY -
+      rect.top -
+      baseY;
+
+
+    const distance =
+      Math.sqrt(
+        dx * dx +
+        dy * dy
+      );
+
+
+    if (distance > MAX_DRAG) {
+
+      const factor =
+        MAX_DRAG / distance;
+
+      dx *= factor;
+      dy *= factor;
+
     }
 
 
-    gameRunning = true;
+    dragX = dx;
+    dragY = dy;
+
+
+    ballX =
+      baseX + dx;
+
+    ballY =
+      baseY + dy;
+
+
+    renderBall();
+
+
+    /*
+      کش لاستیکی تیرکمان
+    */
+
+    if (slingBand) {
+
+      const angle =
+        Math.atan2(
+          dy,
+          dx
+        ) * 180 / Math.PI;
+
+
+      slingBand.style.transform =
+        `translate(${dx}px, ${dy}px) rotate(${angle}deg)`;
+
+    }
+
+  }
+
+
+  /* =======================================================
+     LAUNCH
+  ======================================================= */
+
+  function launch() {
+
+    const power =
+      Math.sqrt(
+        dragX * dragX +
+        dragY * dragY
+      );
+
+
+    if (power < 10) {
+
+      resetProjectile();
+
+      return;
+
+    }
+
+
+    /*
+      بسیار مهم:
+
+      جهت پرتاب = خلاف جهت کشیدن
+
+      کشیدن چپ  → حرکت راست
+      کشیدن راست → حرکت چپ
+      کشیدن بالا → حرکت پایین
+      کشیدن پایین → حرکت بالا
+    */
+
+    velocityX =
+      -dragX * POWER;
+
+    velocityY =
+      -dragY * POWER;
+
+
+    /*
+      محدود کردن سرعت
+    */
+
+    const speed =
+      Math.sqrt(
+        velocityX * velocityX +
+        velocityY * velocityY
+      );
+
+
+    if (speed > MAX_SPEED) {
+
+      const factor =
+        MAX_SPEED / speed;
+
+      velocityX *= factor;
+      velocityY *= factor;
+
+    }
+
+
+    flying = true;
 
     lastTime =
       performance.now();
 
 
-    const message =
-      document.getElementById(
-        "gameMessage"
-      );
+    if (gameMessage) {
 
-
-    if (message) {
-
-      message.textContent =
+      gameMessage.textContent =
         "پرتاب شد!";
 
     }
@@ -1022,17 +691,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  /* -------------------------------------------------------
+  /* =======================================================
      PHYSICS
-  ------------------------------------------------------- */
+  ======================================================= */
 
   function animateProjectile(
     timestamp
   ) {
 
-    if (!gameRunning) {
-      return;
-    }
+    if (!flying) return;
 
 
     let dt =
@@ -1043,11 +710,6 @@ document.addEventListener("DOMContentLoaded", () => {
     lastTime =
       timestamp;
 
-
-    /*
-      جلوگیری از جهش هنگام
-      افت فریم.
-    */
 
     dt =
       Math.min(
@@ -1075,36 +737,22 @@ document.addEventListener("DOMContentLoaded", () => {
       velocityY * dt;
 
 
-    projectile.style.left =
-      `${ballX}px`;
-
-    projectile.style.top =
-      `${ballY}px`;
-
-    projectile.style.bottom =
-      "auto";
-
-    projectile.style.transform =
-      "translate(-50%, -50%)";
-
-
     /*
-      چرخش سنگ در زمان پرواز
+      چرخش سنگ
     */
 
-    projectile.style.rotate =
-      `${timestamp / 4}deg`;
+    rotation +=
+      velocityX * dt * 0.08;
+
+
+    renderBall();
 
 
     /*
       برخورد
     */
 
-    const collision =
-      checkCollision();
-
-
-    if (collision) {
+    if (checkTargets()) {
 
       finishShot();
 
@@ -1114,7 +762,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      خروج از زمین بازی
+      خروج از صفحه
     */
 
     const width =
@@ -1125,10 +773,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     if (
-      ballX < -80 ||
-      ballX > width + 80 ||
-      ballY > height + 100 ||
-      ballY < -150
+      ballX < -100 ||
+      ballX > width + 100 ||
+      ballY < -150 ||
+      ballY > height + 100
     ) {
 
       finishShot();
@@ -1146,13 +794,166 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  /* -------------------------------------------------------
+  /* =======================================================
+     COLLISION
+  ======================================================= */
+
+  function checkTargets() {
+
+    if (!projectile) {
+      return false;
+    }
+
+
+    const ballRect =
+      projectile.getBoundingClientRect();
+
+
+    let hit = false;
+
+
+    targets.forEach(target => {
+
+      if (
+        target.classList.contains(
+          "hit"
+        )
+      ) {
+        return;
+      }
+
+
+      const rect =
+        target.getBoundingClientRect();
+
+
+      const collision =
+
+        ballRect.left <
+        rect.right &&
+
+        ballRect.right >
+        rect.left &&
+
+        ballRect.top <
+        rect.bottom &&
+
+        ballRect.bottom >
+        rect.top;
+
+
+      if (collision) {
+
+        hitTarget(target);
+
+        hit = true;
+
+      }
+
+    });
+
+
+    return hit;
+
+  }
+
+
+  /* =======================================================
+     HIT TARGET
+  ======================================================= */
+
+  function hitTarget(target) {
+
+    if (!target) return;
+
+
+    target.classList.add(
+      "hit"
+    );
+
+
+    score += 1;
+
+
+    if (gameScore) {
+
+      gameScore.textContent =
+        score;
+
+    }
+
+
+    /*
+      +1
+    */
+
+    const plus =
+      document.createElement(
+        "div"
+      );
+
+
+    plus.className =
+      "score-pop";
+
+
+    plus.textContent =
+      "+1";
+
+
+    target.appendChild(
+      plus
+    );
+
+
+    /*
+      ستاره
+    */
+
+    const star =
+      document.createElement(
+        "div"
+      );
+
+
+    star.className =
+      "target-star";
+
+
+    star.textContent =
+      "★";
+
+
+    target.appendChild(
+      star
+    );
+
+
+    setTimeout(() => {
+
+      plus.remove();
+      star.remove();
+
+    }, 2000);
+
+
+    if (gameMessage) {
+
+      gameMessage.textContent =
+        `هدف «${target.dataset.name}» زده شد! +1`;
+
+    }
+
+  }
+
+
+  /* =======================================================
      FINISH SHOT
-  ------------------------------------------------------- */
+  ======================================================= */
 
   function finishShot() {
 
-    gameRunning = false;
+    flying = false;
 
 
     if (animationFrame) {
@@ -1168,43 +969,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
 
-      resetProjectilePosition();
+      resetProjectile();
 
-
-      const message =
-        document.getElementById(
-          "gameMessage"
-        );
-
-
-      if (message) {
-
-        message.textContent =
-          "سنگ را بکش و دوباره پرتاب کن";
-
-      }
-
-    }, 350);
+    }, 400);
 
   }
 
 
-  /* -------------------------------------------------------
+  /* =======================================================
      RESTART
-  ------------------------------------------------------- */
+  ======================================================= */
 
-  if (restartGameBtn) {
+  const restartButton =
+    document.getElementById(
+      "restartGame"
+    );
 
-    restartGameBtn.addEventListener(
+
+  if (restartButton) {
+
+    restartButton.addEventListener(
       "click",
-      resetGame
+      resetProjectile
     );
 
   }
 
 
   /* =======================================================
-     MUSIC PLAYER
+     MUSIC
   ======================================================= */
 
   const audioPlayer =
@@ -1217,14 +1010,19 @@ document.addEventListener("DOMContentLoaded", () => {
       "musicPlayButton"
     );
 
+  const currentTrackTitle =
+    document.getElementById(
+      "currentTrackTitle"
+    );
+
   const musicProgress =
     document.getElementById(
       "musicProgress"
     );
 
-  const currentTrackTitle =
+  const musicProgressContainer =
     document.getElementById(
-      "currentTrackTitle"
+      "musicProgressContainer"
     );
 
 
@@ -1233,7 +1031,7 @@ document.addEventListener("DOMContentLoaded", () => {
     title
   ) {
 
-    if (!audioPlayer) {
+    if (!audioPlayer || !src) {
       return;
     }
 
@@ -1265,10 +1063,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  if (
-    musicPlayButton &&
-    audioPlayer
-  ) {
+  if (musicPlayButton) {
 
     musicPlayButton.addEventListener(
       "click",
@@ -1279,9 +1074,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        if (
-          audioPlayer.paused
-        ) {
+        if (audioPlayer.paused) {
 
           audioPlayer.play();
 
@@ -1309,7 +1102,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "timeupdate",
       () => {
 
-        if (!audioPlayer.duration) {
+        if (
+          !audioPlayer.duration ||
+          !musicProgress
+        ) {
           return;
         }
 
@@ -1321,12 +1117,8 @@ document.addEventListener("DOMContentLoaded", () => {
           ) * 100;
 
 
-        if (musicProgress) {
-
-          musicProgress.style.width =
-            `${percent}%`;
-
-        }
+        musicProgress.style.width =
+          `${percent}%`;
 
       }
     );
@@ -1342,7 +1134,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "▶";
 
         }
-
 
         if (musicProgress) {
 
@@ -1371,9 +1162,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-      if (!button) {
-        return;
-      }
+      if (!button) return;
 
 
       const item =
@@ -1382,12 +1171,10 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-      if (!item) {
-        return;
-      }
+      if (!item) return;
 
 
-      const source =
+      const src =
         item.dataset.src;
 
 
@@ -1398,9 +1185,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "موزیک عشاق";
 
 
-      if (!source) {
-        return;
-      }
+      if (!src) return;
 
 
       document
@@ -1422,7 +1207,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       playMusic(
-        source,
+        src,
         title
       );
 
@@ -1431,21 +1216,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     MUSIC PROGRESS CLICK
+     MUSIC PROGRESS SEEK
   ======================================================= */
 
-  const progressContainer =
-    document.getElementById(
-      "musicProgressContainer"
-    );
+  if (musicProgressContainer) {
 
-
-  if (
-    progressContainer &&
-    audioPlayer
-  ) {
-
-    progressContainer.addEventListener(
+    musicProgressContainer.addEventListener(
       "click",
       event => {
 
@@ -1455,7 +1231,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const rect =
-          progressContainer
+          musicProgressContainer
             .getBoundingClientRect();
 
 
@@ -1483,57 +1259,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     ADMIN UPLOAD
+     ADMIN LINKS
   ======================================================= */
 
-  const uploadLinks =
-    document.querySelectorAll(
+  document
+    .querySelectorAll(
       ".upload-link"
-    );
+    )
+    .forEach(link => {
 
+      link.addEventListener(
+        "click",
+        event => {
 
-  uploadLinks.forEach(link => {
+          event.preventDefault();
 
-    link.addEventListener(
-      "click",
-      event => {
+          window.location.href =
+            "admin.html";
 
-        event.preventDefault();
+        }
+      );
 
-        window.location.href =
-          "admin.html";
-
-      }
-    );
-
-  });
-
-
-  /* =======================================================
-     SAVED PLAYER NAME
-  ======================================================= */
-
-  const savedName =
-    sessionStorage.getItem(
-      "oshaghiPlayerName"
-    );
-
-
-  const gamePlayerName =
-    document.getElementById(
-      "gamePlayerName"
-    );
-
-
-  if (
-    savedName &&
-    gamePlayerName
-  ) {
-
-    gamePlayerName.textContent =
-      savedName;
-
-  }
+    });
 
 
   /* =======================================================
@@ -1550,6 +1297,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     year.textContent =
       new Date().getFullYear();
+
+  }
+
+
+  /* =======================================================
+     SAVED PLAYER
+  ======================================================= */
+
+  const savedName =
+    sessionStorage.getItem(
+      "oshaghiPlayerName"
+    );
+
+
+  const playerName =
+    document.getElementById(
+      "gamePlayerName"
+    );
+
+
+  if (
+    savedName &&
+    playerName
+  ) {
+
+    playerName.textContent =
+      savedName;
 
   }
 
