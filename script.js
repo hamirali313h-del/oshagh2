@@ -1,1563 +1,858 @@
-/* =========================================================
-   عشاق — STYLE
-========================================================= */
+/* =========================================
+   OSHAGH - MAIN SCRIPT
+========================================= */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* ---------- Navigation ---------- */
 
-html {
-  scroll-behavior: smooth;
-}
+const navLinks = document.querySelectorAll(".nav a");
 
-body {
-  font-family: Tahoma, Arial, sans-serif;
-  background: #071b2d;
-  color: #eef7ff;
-  line-height: 1.8;
-  overflow-x: hidden;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-input {
-  font-family: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-.container {
-  width: min(1180px, calc(100% - 40px));
-  margin: auto;
-}
+navLinks.forEach(link => {
+  link.addEventListener("click", () => {
+    navLinks.forEach(item => item.classList.remove("active"));
+    link.classList.add("active");
+  });
+});
 
 
-/* =========================================================
-   HEADER
-========================================================= */
+/* =========================================
+   GAME LOGIN
+========================================= */
 
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(5, 20, 34, .94);
-  border-bottom: 1px solid rgba(110, 180, 235, .13);
-  backdrop-filter: blur(15px);
-}
+const gameModal = document.getElementById("gameModal");
+const playGameBtn = document.getElementById("playGameBtn");
+const closeGameBtn = document.getElementById("closeGame");
+const enterGameBtn = document.getElementById("enterGame");
 
-.nav-container {
-  width: min(1250px, calc(100% - 40px));
-  min-height: 78px;
-  margin: auto;
+const playerNameInput = document.getElementById("playerName");
+const secretWordInput = document.getElementById("secretWord");
+const loginError = document.getElementById("loginError");
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-}
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-}
+function openGameModal() {
 
-.brand img {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  object-fit: cover;
-}
+  if (!gameModal) return;
 
-.brand strong {
-  display: block;
-  font-size: 19px;
-}
+  gameModal.classList.add("show");
+  gameModal.setAttribute("aria-hidden", "false");
 
-.brand small {
-  display: block;
-  color: #78bce9;
-  font-size: 10px;
-  margin-top: 2px;
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.nav a {
-  padding: 8px 14px;
-  border-radius: 9px;
-  color: #a9c3d7;
-  font-size: 14px;
-  transition: .2s;
-}
-
-.nav a:hover,
-.nav a.active {
-  color: white;
-  background: rgba(48, 139, 210, .16);
-}
-
-.live {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: #91b4ca;
-  font-size: 11px;
-}
-
-.live i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #55b5ff;
-  box-shadow: 0 0 10px #55b5ff;
+  setTimeout(() => {
+    if (playerNameInput) {
+      playerNameInput.focus();
+    }
+  }, 150);
 }
 
 
-/* =========================================================
-   HERO
-========================================================= */
+function closeGameModal() {
 
-.hero {
-  min-height: 720px;
-  position: relative;
-  overflow: hidden;
+  if (!gameModal) return;
 
-  background:
-    radial-gradient(circle at 75% 40%, rgba(24, 113, 180, .28), transparent 30%),
-    linear-gradient(145deg, #071d31, #0b3554 60%, #061727);
-}
+  gameModal.classList.remove("show");
+  gameModal.setAttribute("aria-hidden", "true");
 
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background-image:
-    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
-
-  background-size: 55px 55px;
-  pointer-events: none;
-}
-
-.hero-inner {
-  min-height: 720px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 70px;
-  position: relative;
-  z-index: 2;
-}
-
-.hero-content {
-  max-width: 650px;
-}
-
-.kicker {
-  color: #65b8f5;
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: .5px;
-}
-
-.hero h1 {
-  margin-top: 15px;
-  font-size: clamp(42px, 6vw, 75px);
-  line-height: 1.25;
-  letter-spacing: -2px;
-}
-
-.hero h1 span {
-  color: #50aef1;
-  text-shadow: 0 0 35px rgba(80, 174, 241, .25);
-}
-
-.hero p {
-  max-width: 600px;
-  margin-top: 20px;
-  color: #9bb6c9;
-  font-size: 16px;
-}
-
-.hero-buttons {
-  margin-top: 30px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.btn {
-  border: none;
-  padding: 12px 20px;
-  border-radius: 11px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: bold;
-  transition: .2s;
-}
-
-.btn.primary {
-  background: linear-gradient(135deg, #208bd2, #1263a0);
-  color: white;
-  box-shadow: 0 10px 25px rgba(16, 115, 180, .22);
-}
-
-.btn.primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(16, 115, 180, .35);
-}
-
-.btn.ghost {
-  border: 1px solid rgba(113, 183, 231, .25);
-  background: rgba(255,255,255,.035);
-  color: #d7e9f5;
-}
-
-.btn.ghost:hover {
-  background: rgba(255,255,255,.08);
-}
-
-.hero-note {
-  margin-top: 28px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #66879d;
-  font-size: 10px;
-}
-
-.dot {
-  width: 6px;
-  height: 6px;
-  background: #3e9ddd;
-  border-radius: 50%;
+  if (loginError) {
+    loginError.textContent = "";
+  }
 }
 
 
-/* =========================================================
-   SEAL
-========================================================= */
-
-.seal-area {
-  width: 420px;
-  height: 420px;
-  position: relative;
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+if (playGameBtn) {
+  playGameBtn.addEventListener("click", openGameModal);
 }
 
-.seal-backdrop {
-  position: absolute;
-  width: 330px;
-  height: 330px;
-  border-radius: 50%;
 
-  background: radial-gradient(
-    circle,
-    rgba(37, 139, 211, .18),
-    transparent 68%
+if (closeGameBtn) {
+  closeGameBtn.addEventListener("click", closeGameModal);
+}
+
+
+if (gameModal) {
+
+  gameModal.addEventListener("click", event => {
+
+    if (event.target === gameModal) {
+      closeGameModal();
+    }
+
+  });
+
+}
+
+
+document.addEventListener("keydown", event => {
+
+  if (event.key === "Escape") {
+    closeGameModal();
+  }
+
+});
+
+
+/* ---------- Game Login ---------- */
+
+if (enterGameBtn) {
+
+  enterGameBtn.addEventListener("click", () => {
+
+    const name = playerNameInput.value.trim();
+    const word = secretWordInput.value.trim();
+
+    if (!name) {
+
+      loginError.textContent =
+        "لطفاً نام خود را وارد کنید.";
+
+      playerNameInput.focus();
+
+      return;
+    }
+
+
+    if (word !== "یاریکون") {
+
+      loginError.textContent =
+        "عبارت واردشده درست نیست.";
+
+      secretWordInput.focus();
+
+      return;
+    }
+
+
+    /*
+      فعلاً نام فقط برای همین نشست نگه داشته می‌شود.
+      هیچ حساب کاربری ساخته نمی‌شود.
+    */
+
+    sessionStorage.setItem(
+      "oshaghiPlayerName",
+      name
+    );
+
+
+    closeGameModal();
+
+
+    /*
+      وقتی فایل بازی واقعی را اضافه کنیم،
+      اینجا بازی باز خواهد شد.
+    */
+
+    openGame();
+
+  });
+
+}
+
+
+/* ---------- Game ---------- */
+
+function openGame() {
+
+  /*
+    فعلاً پیام موقت است.
+    در مرحله بعد موتور کامل «رمی جقرات»
+    اینجا قرار می‌گیرد.
+  */
+
+  alert(
+    `خوش آمدی ${sessionStorage.getItem("oshaghiPlayerName")}!\n\n` +
+    "بازی رمی جقرات آماده ساخت است."
   );
 
-  filter: blur(8px);
-}
-
-.seal-ring {
-  position: absolute;
-  border: 1px solid rgba(94, 183, 238, .22);
-  border-radius: 50%;
-}
-
-.ring-1 {
-  width: 370px;
-  height: 370px;
-}
-
-.ring-2 {
-  width: 300px;
-  height: 300px;
-  border-style: dashed;
-  opacity: .55;
-}
-
-.seal {
-  width: 235px;
-  height: 235px;
-
-  border-radius: 50%;
-  padding: 10px;
-
-  background:
-    linear-gradient(145deg, #3d9bd6, #082e4c);
-
-  box-shadow:
-    0 0 60px rgba(31, 137, 211, .22),
-    0 20px 50px rgba(0,0,0,.35);
-}
-
-.seal img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.seal-caption {
-  position: absolute;
-  bottom: 20px;
-  color: #81b9d9;
-  font-size: 12px;
 }
 
 
-/* =========================================================
-   SECTIONS
-========================================================= */
+/* =========================================
+   MUSIC PLAYER
+========================================= */
 
-.section {
-  padding-top: 105px;
-  padding-bottom: 105px;
+const audioPlayer =
+  document.getElementById("audioPlayer");
+
+const playMusicBtn =
+  document.getElementById("playMusic");
+
+const prevTrackBtn =
+  document.getElementById("prevTrack");
+
+const nextTrackBtn =
+  document.getElementById("nextTrack");
+
+const playerTitle =
+  document.getElementById("playerTitle");
+
+const playerCover =
+  document.getElementById("playerCover");
+
+const playerProgress =
+  document.getElementById("playerProgress");
+
+const currentTimeElement =
+  document.getElementById("currentTime");
+
+const durationElement =
+  document.getElementById("duration");
+
+
+let musicTracks = [];
+
+let currentTrackIndex = 0;
+
+
+/* ---------- Format Time ---------- */
+
+function formatTime(seconds) {
+
+  if (!Number.isFinite(seconds)) {
+    return "00:00";
+  }
+
+  const minutes =
+    Math.floor(seconds / 60);
+
+  const remainingSeconds =
+    Math.floor(seconds % 60);
+
+  return (
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(remainingSeconds).padStart(2, "0")
+  );
+
 }
 
-.section-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 30px;
-  margin-bottom: 35px;
+
+/* ---------- Load Track ---------- */
+
+function loadTrack(index, autoplay = false) {
+
+  if (!musicTracks.length) {
+    return;
+  }
+
+  currentTrackIndex = index;
+
+  const track =
+    musicTracks[currentTrackIndex];
+
+  if (!track) {
+    return;
+  }
+
+
+  if (audioPlayer) {
+    audioPlayer.src = track.url;
+    audioPlayer.load();
+  }
+
+
+  if (playerTitle) {
+    playerTitle.textContent =
+      track.title || "بدون عنوان";
+  }
+
+
+  if (playerCover) {
+    playerCover.src =
+      track.cover || "logo.png";
+  }
+
+
+  if (playerProgress) {
+    playerProgress.style.width = "0%";
+  }
+
+
+  if (currentTimeElement) {
+    currentTimeElement.textContent = "00:00";
+  }
+
+
+  if (durationElement) {
+    durationElement.textContent = "00:00";
+  }
+
+
+  document
+    .querySelectorAll(".music-item")
+    .forEach(item => {
+
+      item.classList.remove("active");
+
+    });
+
+
+  const activeItem =
+    document.querySelector(
+      `.music-item[data-index="${index}"]`
+    );
+
+
+  if (activeItem) {
+    activeItem.classList.add("active");
+  }
+
+
+  if (autoplay && audioPlayer) {
+
+    audioPlayer
+      .play()
+      .catch(() => {});
+
+  }
+
 }
 
-.section-top h2 {
-  margin-top: 5px;
-  font-size: 35px;
+
+/* ---------- Play / Pause ---------- */
+
+if (playMusicBtn) {
+
+  playMusicBtn.addEventListener("click", () => {
+
+    if (!audioPlayer || !musicTracks.length) {
+      return;
+    }
+
+
+    if (audioPlayer.paused) {
+
+      audioPlayer
+        .play()
+        .catch(() => {});
+
+    } else {
+
+      audioPlayer.pause();
+
+    }
+
+  });
+
 }
 
-.section-top p {
-  max-width: 420px;
-  color: #7895a8;
-  font-size: 13px;
+
+/* ---------- Audio Events ---------- */
+
+if (audioPlayer) {
+
+  audioPlayer.addEventListener("play", () => {
+
+    if (playMusicBtn) {
+      playMusicBtn.textContent = "Ⅱ";
+    }
+
+  });
+
+
+  audioPlayer.addEventListener("pause", () => {
+
+    if (playMusicBtn) {
+      playMusicBtn.textContent = "▶";
+    }
+
+  });
+
+
+  audioPlayer.addEventListener("timeupdate", () => {
+
+    if (!audioPlayer.duration) {
+      return;
+    }
+
+
+    const percentage =
+      (audioPlayer.currentTime /
+        audioPlayer.duration) * 100;
+
+
+    if (playerProgress) {
+      playerProgress.style.width =
+        percentage + "%";
+    }
+
+
+    if (currentTimeElement) {
+      currentTimeElement.textContent =
+        formatTime(audioPlayer.currentTime);
+    }
+
+  });
+
+
+  audioPlayer.addEventListener("loadedmetadata", () => {
+
+    if (durationElement) {
+
+      durationElement.textContent =
+        formatTime(audioPlayer.duration);
+
+    }
+
+  });
+
+
+  audioPlayer.addEventListener("ended", () => {
+
+    if (!musicTracks.length) {
+      return;
+    }
+
+
+    let next =
+      currentTrackIndex + 1;
+
+
+    if (next >= musicTracks.length) {
+      next = 0;
+    }
+
+
+    loadTrack(next, true);
+
+  });
+
 }
 
-.section-top.light p {
-  color: #89aac0;
+
+/* ---------- Previous ---------- */
+
+if (prevTrackBtn) {
+
+  prevTrackBtn.addEventListener("click", () => {
+
+    if (!musicTracks.length) {
+      return;
+    }
+
+
+    let previous =
+      currentTrackIndex - 1;
+
+
+    if (previous < 0) {
+      previous = musicTracks.length - 1;
+    }
+
+
+    loadTrack(previous, true);
+
+  });
+
 }
 
 
-/* =========================================================
+/* ---------- Next ---------- */
+
+if (nextTrackBtn) {
+
+  nextTrackBtn.addEventListener("click", () => {
+
+    if (!musicTracks.length) {
+      return;
+    }
+
+
+    let next =
+      currentTrackIndex + 1;
+
+
+    if (next >= musicTracks.length) {
+      next = 0;
+    }
+
+
+    loadTrack(next, true);
+
+  });
+
+}
+
+
+/* ---------- Progress Click ---------- */
+
+const progressContainer =
+  document.querySelector(".player-progress");
+
+
+if (progressContainer) {
+
+  progressContainer.addEventListener("click", event => {
+
+    if (
+      !audioPlayer ||
+      !audioPlayer.duration
+    ) {
+      return;
+    }
+
+
+    const rect =
+      progressContainer.getBoundingClientRect();
+
+
+    const percent =
+      (event.clientX - rect.left) /
+      rect.width;
+
+
+    audioPlayer.currentTime =
+      audioPlayer.duration *
+      Math.max(0, Math.min(1, percent));
+
+  });
+
+}
+
+
+/* =========================================
+   MUSIC LIST
+========================================= */
+
+function renderMusicList(tracks) {
+
+  const musicList =
+    document.getElementById("musicList");
+
+
+  if (!musicList) {
+    return;
+  }
+
+
+  musicList.innerHTML = "";
+
+
+  if (!tracks.length) {
+
+    musicList.innerHTML = `
+
+      <div class="music-empty">
+
+        <div class="music-empty-icon">
+          ♪
+        </div>
+
+        <h3>آرشیو موسیقی</h3>
+
+        <p>
+          هنوز آهنگی اضافه نشده است.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+
+  tracks.forEach((track, index) => {
+
+    const item =
+      document.createElement("div");
+
+
+    item.className = "music-item";
+
+    item.dataset.index = index;
+
+
+    item.innerHTML = `
+
+      <img
+        class="music-cover"
+        src="${track.cover || "logo.png"}"
+        alt="کاور"
+      >
+
+      <div class="music-info">
+
+        <h3>
+          ${escapeHTML(track.title || "بدون عنوان")}
+        </h3>
+
+        <span>
+          ${escapeHTML(track.artist || "عشاق")}
+        </span>
+
+      </div>
+
+      <div class="music-actions">
+
+        <button
+          class="music-play"
+          type="button"
+          aria-label="پخش"
+        >
+          ▶
+        </button>
+
+        ${
+          track.url
+            ? `
+              <a
+                class="music-download"
+                href="${track.url}"
+                download
+                title="دانلود"
+              >
+                ↓
+              </a>
+            `
+            : ""
+        }
+
+      </div>
+
+    `;
+
+
+    const playButton =
+      item.querySelector(".music-play");
+
+
+    playButton.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        loadTrack(index, true);
+
+      }
+    );
+
+
+    item.addEventListener("click", () => {
+
+      loadTrack(index, true);
+
+    });
+
+
+    musicList.appendChild(item);
+
+  });
+
+}
+
+
+/* =========================================
    POSTS
-========================================================= */
+========================================= */
 
-.news-layout {
-  display: grid;
-  grid-template-columns: 1.55fr 1fr;
-  gap: 20px;
-}
+function renderPosts(posts) {
 
-.news-card,
-.mini-news {
-  border: 1px solid rgba(104, 171, 215, .12);
-  background: linear-gradient(
-    145deg,
-    rgba(18, 54, 78, .8),
-    rgba(8, 29, 46, .9)
-  );
-  border-radius: 18px;
-  overflow: hidden;
-}
+  const container =
+    document.getElementById("postsContainer");
 
-.main-news {
-  min-height: 420px;
-}
 
-.media-placeholder {
-  height: 220px;
-  background:
-    radial-gradient(circle at center, rgba(48, 143, 210, .25), transparent 45%),
-    #0a263d;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  color: #6daed6;
-}
-
-.media-symbol {
-  width: 75px;
-  height: 75px;
-  border-radius: 20px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 38px;
-  font-weight: bold;
-
-  border: 1px solid rgba(93, 180, 236, .25);
-  background: rgba(255,255,255,.025);
-}
-
-.media-placeholder span {
-  margin-top: 10px;
-  font-size: 10px;
-}
-
-.news-content {
-  padding: 25px;
-}
-
-.meta {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  font-size: 10px;
-  color: #72b7e7;
-}
-
-.meta span {
-  color: #637f92;
-}
-
-.news-content h3 {
-  margin-top: 12px;
-  font-size: 21px;
-}
-
-.news-content p {
-  margin-top: 10px;
-  color: #819bad;
-  font-size: 12px;
-}
-
-.read-more {
-  display: inline-block;
-  margin-top: 17px;
-  color: #63b7ee;
-  font-size: 12px;
-}
-
-.side-news {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.mini-news {
-  min-height: 125px;
-  padding: 17px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.mini-media {
-  width: 80px;
-  height: 80px;
-  border-radius: 13px;
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 27px;
-
-  background: #0b314d;
-  border: 1px solid rgba(96, 174, 225, .12);
-}
-
-.mini-news span {
-  color: #55a9df;
-  font-size: 9px;
-}
-
-.mini-news h3 {
-  margin-top: 2px;
-  font-size: 15px;
-}
-
-.mini-news small {
-  color: #607e91;
-  font-size: 9px;
-}
-
-
-/* =========================================================
-   GAMES SECTION
-========================================================= */
-
-.games-section {
-  padding: 100px 0;
-  background:
-    radial-gradient(circle at 20% 50%, rgba(22, 105, 166, .2), transparent 30%),
-    #061a2a;
-}
-
-.game-showcase {
-  min-height: 240px;
-  padding: 35px;
-
-  display: grid;
-  grid-template-columns: 130px 1fr auto;
-  align-items: center;
-  gap: 30px;
-
-  border-radius: 22px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(18, 65, 94, .75),
-      rgba(6, 27, 43, .95)
-    );
-
-  border: 1px solid rgba(92, 175, 226, .16);
-
-  box-shadow:
-    0 25px 60px rgba(0,0,0,.2);
-}
-
-.game-emblem {
-  width: 115px;
-  height: 115px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 28px;
-
-  font-size: 55px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #12557e,
-      #082a43
-    );
-
-  border: 1px solid rgba(94, 185, 237, .2);
-
-  box-shadow:
-    inset 0 0 30px rgba(73, 163, 219, .08);
-}
-
-.game-label {
-  color: #5bb4ed;
-  font-size: 10px;
-  font-weight: bold;
-}
-
-.game-copy h3 {
-  margin-top: 3px;
-  font-size: 29px;
-}
-
-.game-copy p {
-  margin-top: 7px;
-  color: #7f9caf;
-  font-size: 12px;
-}
-
-.targets-preview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 15px;
-}
-
-.targets-preview span {
-  padding: 4px 9px;
-  border-radius: 6px;
-
-  font-size: 10px;
-
-  color: #a6d3ed;
-  background: rgba(38, 126, 183, .12);
-  border: 1px solid rgba(71, 158, 210, .14);
-}
-
-.game-button {
-  min-width: 190px;
-}
-
-
-/* =========================================================
-   MUSIC
-========================================================= */
-
-.player {
-  min-height: 220px;
-  padding: 30px;
-
-  display: grid;
-  grid-template-columns: 130px 1fr 260px;
-  align-items: center;
-  gap: 25px;
-
-  border-radius: 20px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(18, 58, 84, .75),
-      rgba(7, 28, 45, .95)
-    );
-
-  border: 1px solid rgba(100, 176, 224, .12);
-}
-
-.album {
-  width: 120px;
-  height: 120px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 18px;
-
-  font-size: 55px;
-  color: #67baf0;
-
-  background:
-    radial-gradient(circle, #124f78, #071f34);
-
-  border: 1px solid rgba(86, 176, 230, .18);
-}
-
-.player-info small {
-  color: #5eaddd;
-  font-size: 10px;
-}
-
-.player-info h3 {
-  margin-top: 5px;
-  font-size: 20px;
-}
-
-.track-line {
-  height: 4px;
-  margin-top: 20px;
-  overflow: hidden;
-  border-radius: 10px;
-  background: #183b54;
-}
-
-.track-line span {
-  display: block;
-  width: 0;
-  height: 100%;
-  background: #46a8e7;
-}
-
-.controls {
-  margin-top: 15px;
-  display: flex;
-  gap: 8px;
-}
-
-.controls button {
-  width: 34px;
-  height: 34px;
-
-  border: none;
-  border-radius: 9px;
-
-  color: #9cc8e2;
-  background: #0c3049;
-}
-
-.controls .play {
-  color: white;
-  background: #1479b8;
-}
-
-.playlist {
-  min-height: 130px;
-  padding: 18px;
-
-  display: flex;
-  flex-direction: column;
-
-  border-radius: 14px;
-  background: rgba(255,255,255,.025);
-  border: 1px solid rgba(110,180,230,.08);
-}
-
-.playlist span {
-  color: #69b6e9;
-  font-size: 10px;
-}
-
-.playlist b {
-  margin-top: 8px;
-  font-size: 15px;
-}
-
-.playlist small {
-  margin-top: 7px;
-  color: #718c9d;
-  font-size: 9px;
-}
-
-
-/* =========================================================
-   GAME MODAL
-========================================================= */
-
-.game-modal {
-  position: fixed;
-  inset: 0;
-
-  z-index: 1000;
-
-  display: none;
-  align-items: center;
-  justify-content: center;
-
-  padding: 20px;
-
-  background: rgba(1, 9, 17, .88);
-  backdrop-filter: blur(12px);
-}
-
-.game-modal.show {
-  display: flex;
-}
-
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
-.game-login {
-  width: min(430px, 100%);
-  position: relative;
-
-  padding: 40px 30px;
-
-  text-align: center;
-
-  border-radius: 22px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #103b5b,
-      #071d30
-    );
-
-  border: 1px solid rgba(100, 184, 235, .2);
-
-  box-shadow:
-    0 30px 90px rgba(0,0,0,.55);
-}
-
-.close-game,
-.exit-game {
-  position: absolute;
-
-  border: none;
-
-  color: #aac5d6;
-  background: rgba(255,255,255,.05);
-
-  border-radius: 9px;
-
-  transition: .2s;
-}
-
-.close-game {
-  top: 15px;
-  right: 15px;
-
-  width: 34px;
-  height: 34px;
-
-  font-size: 24px;
-}
-
-.close-game:hover,
-.exit-game:hover {
-  color: white;
-  background: rgba(255,255,255,.1);
-}
-
-.game-login-icon {
-  width: 80px;
-  height: 80px;
-
-  margin: auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 22px;
-
-  font-size: 40px;
-
-  background: #0b3451;
-  border: 1px solid rgba(97, 182, 233, .18);
-}
-
-.game-login h2 {
-  margin-top: 15px;
-  font-size: 27px;
-}
-
-.game-login p {
-  margin: 5px auto 22px;
-  color: #819eb0;
-  font-size: 11px;
-}
-
-.game-login input {
-  width: 100%;
-  height: 48px;
-
-  margin-top: 10px;
-  padding: 0 15px;
-
-  color: white;
-  background: #061b2d;
-
-  border: 1px solid rgba(104, 179, 229, .15);
-  border-radius: 10px;
-
-  outline: none;
-}
-
-.game-login input:focus {
-  border-color: #3196d5;
-  box-shadow: 0 0 0 3px rgba(49,150,213,.08);
-}
-
-.login-button {
-  width: 100%;
-  margin-top: 15px;
-}
-
-.login-error {
-  min-height: 22px;
-  margin-top: 10px;
-
-  color: #ff9292;
-  font-size: 10px;
-}
-
-
-/* =========================================================
-   REAL GAME
-========================================================= */
-
-.real-game {
-  display: none;
-
-  position: fixed;
-  inset: 0;
-
-  background: #061a29;
-}
-
-.real-game.active {
-  display: block;
-}
-
-.exit-game {
-  top: 18px;
-  right: 18px;
-
-  z-index: 50;
-
-  padding: 8px 14px;
-
-  font-size: 11px;
-}
-
-.game-header {
-  position: absolute;
-
-  top: 17px;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  z-index: 40;
-
-  text-align: center;
-
-  pointer-events: none;
-}
-
-.game-header span {
-  color: #59afe4;
-  font-size: 9px;
-}
-
-.game-header h2 {
-  font-size: 23px;
-}
-
-
-/* =========================================================
-   GAME FIELD
-========================================================= */
-
-#game {
-  position: absolute;
-  inset: 0;
-
-  overflow: hidden;
-
-  background: #8b563d;
-}
-
-.brick-wall {
-  position: absolute;
-  inset: 0;
-
-  background-color: #925b40;
-
-  background-image:
-    linear-gradient(
-      rgba(50,20,10,.38) 2px,
-      transparent 2px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(50,20,10,.35) 2px,
-      transparent 2px
-    );
-
-  background-size:
-    100% 58px,
-    120px 58px;
-}
-
-.brick-wall::after {
-  content: "";
-
-  position: absolute;
-  inset: 0;
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255,255,255,.03),
-      rgba(0,0,0,.18)
-    );
-}
-
-
-/* =========================================================
-   TARGETS
-========================================================= */
-
-.game-targets {
-  position: absolute;
-
-  top: 19%;
-  left: 5%;
-  right: 5%;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  z-index: 10;
-}
-
-.game-target {
-  width: 125px;
-  height: 72px;
-
-  position: relative;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  animation:
-    targetFloat
-    var(--target-speed, 3s)
-    ease-in-out
-    infinite alternate;
-}
-
-.game-target:nth-child(1) {
-  --target-speed: 2.7s;
-}
-
-.game-target:nth-child(2) {
-  --target-speed: 3.1s;
-}
-
-.game-target:nth-child(3) {
-  --target-speed: 2.8s;
-}
-
-.game-target:nth-child(4) {
-  --target-speed: 3.3s;
-}
-
-.game-target:nth-child(5) {
-  --target-speed: 2.9s;
-}
-
-@keyframes targetFloat {
-  from {
-    transform: translateY(-3px) rotate(-.8deg);
+  if (!container) {
+    return;
   }
 
-  to {
-    transform: translateY(3px) rotate(.8deg);
-  }
-}
 
-.game-target span {
-  min-width: 95px;
-  height: 52px;
+  container.innerHTML = "";
 
-  padding: 0 10px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  if (!posts.length) {
 
-  border-radius: 7px;
+    container.innerHTML = `
 
-  color: white;
+      <article class="post-card empty-card">
 
-  font-size: 18px;
-  font-weight: bold;
+        <div class="empty-icon">
+          ع
+        </div>
 
-  background:
-    linear-gradient(
-      145deg,
-      #1976b9,
-      #0a4772
-    );
+        <div>
 
-  border: 2px solid #68aedd;
+          <h3>
+            هنوز مطلبی منتشر نشده
+          </h3>
 
-  box-shadow:
-    0 7px 15px rgba(0,0,0,.35),
-    inset 0 0 0 1px rgba(255,255,255,.08);
+          <p>
+            مطالب جدید از این بخش نمایش داده خواهند شد.
+          </p>
 
-  text-shadow:
-    0 2px 4px rgba(0,0,0,.8);
+        </div>
 
-  transition: .12s;
-}
+      </article>
 
-.game-target.hit span {
-  animation: targetHit .45s ease;
-}
+    `;
 
-@keyframes targetHit {
-  0% {
-    transform: scale(1);
+    return;
   }
 
-  35% {
-    transform: scale(1.14) rotate(-4deg);
-  }
 
-  65% {
-    transform: scale(.94) rotate(4deg);
-  }
+  posts.forEach(post => {
 
-  100% {
-    transform: scale(1);
-  }
-}
+    const article =
+      document.createElement("article");
 
 
-/* =========================================================
-   SCORE POPUP
-========================================================= */
+    article.className = "post-card";
 
-.score-pop {
-  position: absolute;
 
-  top: 50%;
-  left: calc(50% + 58px);
+    let media = "";
 
-  z-index: 30;
 
-  display: flex;
-  align-items: center;
-  gap: 4px;
+    if (post.media_url) {
 
-  direction: ltr;
+      if (post.media_type === "video") {
 
-  font-size: 17px;
-  font-weight: bold;
+        media = `
 
-  color: white;
+          <div class="post-media">
 
-  text-shadow:
-    0 2px 5px rgba(0,0,0,.9);
+            <video
+              controls
+              preload="metadata"
+              src="${post.media_url}"
+            ></video>
 
-  pointer-events: none;
+          </div>
 
-  animation:
-    scorePop
-    2s
-    ease forwards;
-}
+        `;
 
-.score-star {
-  font-size: 18px;
-}
+      } else {
 
-.score-number {
-  color: #79c8ff;
-}
+        media = `
 
-@keyframes scorePop {
-  0% {
-    opacity: 0;
-    transform: translateY(-50%) translateX(-8px) scale(.65);
-  }
+          <div class="post-media">
 
-  12% {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0) scale(1);
-  }
+            <img
+              src="${post.media_url}"
+              alt="${escapeHTML(post.title || "مطلب عشاق")}"
+              loading="lazy"
+            >
 
-  70% {
-    opacity: 1;
-    transform: translateY(-70%) translateX(0) scale(1);
-  }
+          </div>
 
-  100% {
-    opacity: 0;
-    transform: translateY(-100%) translateX(8px) scale(.9);
-  }
+        `;
+
+      }
+
+    }
+
+
+    article.innerHTML = `
+
+      ${media}
+
+      <div class="post-content">
+
+        <div class="post-meta">
+
+          <span>
+            خبرگزاری عشاق
+          </span>
+
+          <span>
+            ${formatDate(post.created_at)}
+          </span>
+
+        </div>
+
+        <h3>
+          ${escapeHTML(post.title || "بدون عنوان")}
+        </h3>
+
+        <p>
+          ${escapeHTML(post.content || "")}
+        </p>
+
+      </div>
+
+    `;
+
+
+    container.appendChild(article);
+
+  });
+
 }
 
 
-/* =========================================================
-   CANVAS
-========================================================= */
+/* =========================================
+   HELPERS
+========================================= */
 
-#gameCanvas {
-  position: absolute;
-  inset: 0;
+function escapeHTML(value) {
 
-  width: 100%;
-  height: 100%;
+  if (value === null || value === undefined) {
+    return "";
+  }
 
-  z-index: 25;
 
-  pointer-events: none;
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
 }
 
 
-/* =========================================================
-   STONE
-========================================================= */
+function formatDate(dateString) {
 
-#gameStone {
-  position: absolute;
+  if (!dateString) {
+    return "";
+  }
 
-  width: 34px;
-  height: 34px;
 
-  display: none;
+  const date =
+    new Date(dateString);
 
-  z-index: 30;
 
-  border-radius: 50%;
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
 
-  background:
-    radial-gradient(
-      circle at 30% 25%,
-      #eeeeee,
-      #999 42%,
-      #3c3c3c 80%
-    );
 
-  box-shadow:
-    0 7px 13px rgba(0,0,0,.6);
+  return new Intl.DateTimeFormat(
+    "fa-IR",
+    {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    }
+  ).format(date);
+
 }
 
 
-/* =========================================================
-   SLINGSHOT
-========================================================= */
+/* =========================================
+   TEMPORARY DATA
+========================================= */
 
-.game-sling {
-  position: absolute;
+/*
+  فعلاً این آرایه‌ها خالی هستند.
 
-  left: 50%;
-  bottom: 4%;
+  در مرحله اتصال Supabase،
+  اطلاعات واقعی از دیتابیس خوانده می‌شوند.
+*/
 
-  width: 125px;
-  height: 155px;
+musicTracks = [];
 
-  transform: translateX(-50%);
+renderMusicList(musicTracks);
 
-  z-index: 35;
-}
+renderPosts([]);
 
-.sling-base {
-  position: absolute;
 
-  left: 50%;
-  bottom: 0;
+/* =========================================
+   SUPABASE
+========================================= */
 
-  width: 21px;
-  height: 100px;
+/*
+  اتصال واقعی Supabase را در مرحله بعد
+  اضافه می‌کنیم.
 
-  transform: translateX(-50%);
+  فعلاً این قسمت را دست نمی‌زنیم.
+*/
 
-  border-radius: 12px;
 
-  background:
-    linear-gradient(
-      90deg,
-      #32190f,
-      #754329,
-      #3a1e12
-    );
-
-  box-shadow:
-    4px 5px 9px rgba(0,0,0,.5);
-}
-
-.sling-left,
-.sling-right {
-  position: absolute;
-
-  bottom: 70px;
-
-  width: 20px;
-  height: 76px;
-
-  border-radius: 12px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #32190f,
-      #754329,
-      #3a1e12
-    );
-}
-
-.sling-left {
-  left: 31px;
-  transform: rotate(-28deg);
-}
-
-.sling-right {
-  right: 31px;
-  transform: rotate(28deg);
-}
-
-.sling-band {
-  position: absolute;
-
-  left: 50%;
-  bottom: 129px;
-
-  width: 82px;
-  height: 7px;
-
-  transform: translateX(-50%);
-
-  border-radius: 10px;
-
-  background: #d39b4d;
-}
-
-.game-help {
-  position: absolute;
-
-  left: 50%;
-  bottom: 10px;
-
-  transform: translateX(-50%);
-
-  z-index: 50;
-
-  padding: 8px 15px;
-
-  border-radius: 10px;
-
-  color: #c4d9e7;
-
-  background: rgba(4,18,30,.9);
-
-  border: 1px solid rgba(255,255,255,.1);
-
-  font-size: 10px;
-
-  white-space: nowrap;
-}
-
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.footer {
-  padding: 30px 0;
-
-  background: #041321;
-
-  border-top: 1px solid rgba(100,170,215,.1);
-
-  color: #59788d;
-
-  font-size: 10px;
-}
-
-.footer .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.footer strong {
-  display: block;
-  color: #8ebbd5;
-  font-size: 14px;
-}
-
-.footer span {
-  display: block;
-}
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 900px) {
-
-  .nav-container {
-    min-height: 68px;
-  }
-
-  .live {
-    display: none;
-  }
-
-  .hero {
-    min-height: auto;
-  }
-
-  .hero-inner {
-    min-height: auto;
-    padding-top: 90px;
-    padding-bottom: 80px;
-
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .hero-content {
-    max-width: 700px;
-  }
-
-  .hero-buttons {
-    justify-content: center;
-  }
-
-  .hero-note {
-    justify-content: center;
-  }
-
-  .seal-area {
-    width: 330px;
-    height: 330px;
-  }
-
-  .ring-1 {
-    width: 300px;
-    height: 300px;
-  }
-
-  .ring-2 {
-    width: 240px;
-    height: 240px;
-  }
-
-  .seal {
-    width: 185px;
-    height: 185px;
-  }
-
-  .news-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .game-showcase {
-    grid-template-columns: 100px 1fr;
-  }
-
-  .game-button {
-    grid-column: 1 / -1;
-    width: 100%;
-  }
-
-  .player {
-    grid-template-columns: 100px 1fr;
-  }
-
-  .album {
-    width: 95px;
-    height: 95px;
-  }
-
-  .playlist {
-    grid-column: 1 / -1;
-  }
-}
-
-
-@media (max-width: 650px) {
-
-  .container,
-  .nav-container {
-    width: min(100% - 24px, 1180px);
-  }
-
-  .nav {
-    gap: 1px;
-  }
-
-  .nav a {
-    padding: 7px 8px;
-    font-size: 11px;
-  }
-
-  .brand small {
-    display: none;
-  }
-
-  .brand strong {
-    font-size: 16px;
-  }
-
-  .brand img {
-    width: 40px;
-    height: 40px;
-  }
-
-  .hero h1 {
-    font-size: 43px;
-  }
-
-  .section {
-    padding-top: 70px;
-    padding-bottom: 70px;
-  }
-
-  .section-top {
-    display: block;
-  }
-
-  .section-top h2 {
-    font-size: 28px;
-  }
-
-  .section-top p {
-    margin-top: 10px;
-  }
-
-  .game-showcase {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .game-emblem {
-    margin: auto;
-  }
-
-  .targets-preview {
-    justify-content: center;
-  }
-
-  .player {
-    grid-template-columns: 1fr;
-  }
-
-  .album {
-    margin: auto;
-  }
-
-  .game-targets {
-    top: 22%;
-    left: 1%;
-    right: 1%;
-  }
-
-  .game-target {
-    width: 19%;
-    height: 65px;
-  }
-
-  .game-target span {
-    min-width: 0;
-    width: 100%;
-    height: 48px;
-    padding: 0 3px;
-    font-size: 11px;
-    border-width: 2px;
-  }
-
-  .game-sling {
-    bottom: 5%;
-    transform: translateX(-50%) scale(.8);
-  }
-
-  .game-header h2 {
-    font-size: 19px;
-  }
-
-  .game-help {
-    max-width: 90%;
-    text-align: center;
-  }
-
-  .score-pop {
-    left: calc(50% + 43px);
-    font-size: 14px;
-  }
-
-  .footer .container {
-    display: block;
-    text-align: center;
-  }
-
-  .footer .container > span {
-    margin-top: 10px;
-  }
-}
+console.log("Oshagh website loaded successfully.");
