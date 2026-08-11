@@ -1,633 +1,130 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<div class="container">
 
-  <title>عشاق</title>
+  <div class="section-header">
 
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<!-- =====================================================
-     WATERMARKS
-===================================================== -->
-
-<div class="watermarks">
-  <span>یاریکون</span>
-  <span>ادرکنی</span>
-  <span>جوقاد</span>
-  <span>26 85</span>
-  <span>عشاق</span>
-  <span>یاریکون</span>
-  <span>جوقاد</span>
-  <span>26 85</span>
-</div>
-
-
-<!-- =====================================================
-     NAVBAR
-===================================================== -->
-
-<header class="navbar">
-
-  <div class="container navbar-inner">
-
-    <a href="#home" class="logo">
-      <div class="logo-icon">ع</div>
-      <span>عشاق</span>
-    </a>
-
-    <nav class="nav">
-
-      <a href="#home" class="active">
-        خانه
-      </a>
-
-      <a href="#posts">
-        مطالب
-      </a>
-
-      <a href="#games">
-        بازی
-      </a>
-
-      <a href="#music">
-        موزیک
-      </a>
-
-    </nav>
-
-  </div>
-
-</header>
-
-
-
-<!-- =====================================================
-     HOME
-===================================================== -->
-
-<main id="home">
-
-  <section class="hero">
-
-    <div class="container">
-
-      <div class="hero-content">
-
-        <div class="hero-badge">
-          رسانه و سرگرمی عشاق
-        </div>
-
-        <h1>
-          به دنیای
-          <span>عشاق</span>
-          خوش آمدید
-        </h1>
-
-        <p>
-          مطالب، موزیک و بازی‌های اختصاصی در یک فضای ساده،
-          مرتب و دوستانه.
-        </p>
-
-        <div class="hero-buttons">
-
-          <a
-            href="#posts"
-            class="btn primary"
-          >
-            مشاهده مطالب
-          </a>
-
-          <a
-            href="#games"
-            class="btn secondary"
-          >
-            ورود به بخش بازی
-          </a>
-
-        </div>
-
-      </div>
-
+    <div class="small">
+      02 / بازی
     </div>
-
-  </section>
-
-
-
-  <!-- ===================================================
-       HOME CARDS
-  =================================================== -->
-
-  <section class="section">
-
-    <div class="container">
-
-      <div class="section-header">
-
-        <div class="small">
-          بخش‌های سایت
-        </div>
-
-        <h2>
-          همه‌چیز در یکجا
-        </h2>
-
-        <p>
-          از صفحه اصلی به بخش‌های مختلف دسترسی داشته باشید.
-        </p>
-
-      </div>
-
-
-      <div class="home-grid">
-
-
-        <a
-          href="#posts"
-          class="home-card"
-        >
-
-          <div class="home-card-icon">
-            ✦
-          </div>
-
-          <h3>
-            مطالب
-          </h3>
-
-          <p>
-            جدیدترین نوشته‌ها، تصاویر و مطالب منتشرشده.
-          </p>
-
-        </a>
-
-
-
-        <a
-          href="#games"
-          class="home-card"
-        >
-
-          <div class="home-card-icon">
-            ◈
-          </div>
-
-          <h3>
-            بازی
-          </h3>
-
-          <p>
-            وارد بازی رمی جقرات شوید و امتیاز بگیرید.
-          </p>
-
-        </a>
-
-
-
-        <a
-          href="#music"
-          class="home-card"
-        >
-
-          <div class="home-card-icon">
-            ♪
-          </div>
-
-          <h3>
-            موزیک
-          </h3>
-
-          <p>
-            آرشیو موزیک‌های عشاق با کاور و امکان دانلود.
-          </p>
-
-        </a>
-
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- ===================================================
-       POSTS
-  =================================================== -->
-
-  <section
-    id="posts"
-    class="section"
-  >
-
-    <div class="container">
-
-      <div class="section-header">
-
-        <div class="small">
-          01 / مطالب
-        </div>
-
-        <h2>
-          مطالب عشاق
-        </h2>
-
-        <p>
-          جدیدترین مطالب منتشرشده در این بخش قرار می‌گیرند.
-        </p>
-
-      </div>
-
-
-      <div
-        id="postsList"
-        class="posts-list"
-      >
-
-        <article class="post-card">
-
-          <div
-            class="post-card-image"
-            style="
-              background:
-              linear-gradient(135deg,#dceef8,#edf7fb);
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              color:#3688be;
-              font-size:45px;
-            "
-          >
-            ع
-          </div>
-
-          <div class="post-card-content">
-
-            <div class="post-card-date">
-              عشاق
-            </div>
-
-            <h3>
-              هنوز مطلبی منتشر نشده است
-            </h3>
-
-            <p>
-              وقتی اولین مطلب از پنل مدیریت منتشر شود،
-              در این قسمت نمایش داده خواهد شد.
-            </p>
-
-          </div>
-
-        </article>
-
-      </div>
-
-
-      <a
-        href="admin.html"
-        class="upload-link"
-      >
-        آپلود مطلب
-      </a>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- ===================================================
-       GAME
-  =================================================== -->
-
-  <section
-    id="games"
-    class="section"
-  >
-
-    <div class="container">
-
-      <div class="section-header">
-
-        <div class="small">
-          02 / بازی
-        </div>
-
-        <h2>
-          رمی جقرات
-        </h2>
-
-        <p>
-          سنگ را بردار، هدف را انتخاب کن و پرتاب کن.
-        </p>
-
-      </div>
-
-
-      <div
-        class="game-wrapper"
-      >
-
-
-        <div
-          id="gameArea"
-        >
-
-          <div
-            class="game-board"
-            id="gameBoard"
-          >
-
-            <div
-              class="game-score"
-            >
-              امتیاز:
-              <strong id="gameScore">
-                0
-              </strong>
-            </div>
-
-
-            <div
-              class="target"
-              data-name="فتوحا"
-            ></div>
-
-
-            <div
-              class="target"
-              data-name="حسام"
-            ></div>
-
-
-            <div
-              class="target"
-              data-name="فریم"
-            ></div>
-
-
-            <div
-              class="target"
-              data-name="جوربا"
-            ></div>
-
-
-            <div
-              id="gameProjectile"
-              title="برای پرتاب بکش"
-            ></div>
-
-          </div>
-
-        </div>
-
-
-        <button
-          id="playGameBtn"
-          class="btn primary"
-          style="
-            display:block;
-            margin:20px auto 0;
-          "
-        >
-          شروع بازی
-        </button>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- ===================================================
-       MUSIC
-  =================================================== -->
-
-  <section
-    id="music"
-    class="section"
-  >
-
-    <div class="container">
-
-      <div class="section-header">
-
-        <div class="small">
-          03 / موزیک
-        </div>
-
-        <h2>
-          موزیک عشاق
-        </h2>
-
-        <p>
-          آهنگ‌ها به صورت ستونی همراه با کاور و دانلود.
-        </p>
-
-      </div>
-
-
-      <div
-        id="musicList"
-        class="music-list"
-      >
-
-        <div
-          class="music-item"
-        >
-
-          <div
-            class="music-cover"
-            style="
-              background:#e4f2f8;
-              display:grid;
-              place-items:center;
-              color:#3688be;
-              font-size:23px;
-            "
-          >
-            ♪
-          </div>
-
-
-          <div class="music-info">
-
-            <h4>
-              هنوز موزیکی اضافه نشده
-            </h4>
-
-            <p>
-              آرشیو موزیک عشاق
-            </p>
-
-          </div>
-
-
-          <div></div>
-
-        </div>
-
-      </div>
-
-
-      <a
-        href="admin.html"
-        class="upload-link"
-      >
-        آپلود موزیک
-      </a>
-
-
-      <!-- PLAYER -->
-
-      <div
-        class="music-player"
-      >
-
-        <button
-          id="musicPlayButton"
-        >
-          ▶
-        </button>
-
-
-        <div class="player-info">
-
-          <strong
-            id="currentTrackTitle"
-          >
-            موزیکی انتخاب نشده
-          </strong>
-
-          <span>
-            رادیو عشاق
-          </span>
-
-        </div>
-
-
-        <div
-          class="player-progress"
-          id="musicProgressContainer"
-        >
-
-          <div
-            id="musicProgress"
-          ></div>
-
-        </div>
-
-
-        <audio
-          id="audioPlayer"
-        ></audio>
-
-      </div>
-
-    </div>
-
-  </section>
-
-</main>
-
-
-
-<!-- =====================================================
-     GAME MODAL
-===================================================== -->
-
-<div
-  id="gameModal"
-  class="modal"
->
-
-  <div class="modal-box">
-
-    <button
-      id="closeGame"
-      class="modal-close"
-    >
-      ×
-    </button>
-
 
     <h2>
-      ورود به بازی
+      رمی جقرات
     </h2>
 
     <p>
-      برای ورود نام خود را وارد کنید.
+      سنگ را بکش، نشانه بگیر و اسم‌ها را هدف بگیر.
     </p>
 
-
-    <input
-      id="playerName"
-      type="text"
-      placeholder="نام شما"
-      autocomplete="off"
-    >
+  </div>
 
 
-    <input
-      id="secretWord"
-      type="password"
-      placeholder="عبارت ورود"
-      autocomplete="off"
-    >
+  <div class="game-wrapper">
+
+    <div id="gameArea">
+
+      <div
+        class="game-board"
+        id="gameBoard"
+      >
+
+        <!-- امتیاز -->
+
+        <div class="game-score">
+          امتیاز:
+          <strong id="gameScore">0</strong>
+        </div>
 
 
-    <div
-      id="loginError"
-      style="
-        min-height:20px;
-        color:#d65763;
-        font-size:9px;
-        margin-bottom:5px;
-      "
-    ></div>
+        <!-- دیوار هدف -->
+
+        <div class="target-wall">
+
+          <div
+            class="target"
+            data-name="فتوحا"
+          >
+            <span>فتوحا</span>
+          </div>
+
+          <div
+            class="target"
+            data-name="حسام"
+          >
+            <span>حسام</span>
+          </div>
+
+          <div
+            class="target"
+            data-name="فریم"
+          >
+            <span>فریم</span>
+          </div>
+
+          <div
+            class="target"
+            data-name="جوربا"
+          >
+            <span>جوربا</span>
+          </div>
+
+        </div>
+
+
+        <!-- تیرکمان -->
+
+        <div
+          class="slingshot"
+          id="slingshot"
+        >
+
+          <div class="slingshot-arm left"></div>
+
+          <div class="slingshot-arm right"></div>
+
+          <div
+            class="slingshot-band"
+            id="slingBand"
+          ></div>
+
+          <div class="slingshot-base"></div>
+
+        </div>
+
+
+        <!-- سنگ -->
+
+        <div
+          id="gameProjectile"
+          title="سنگ را بکش و پرتاب کن"
+        >
+          <span></span>
+        </div>
+
+
+        <!-- پیام بازی -->
+
+        <div
+          id="gameMessage"
+          class="game-message"
+        >
+          سنگ را بکش و رها کن
+        </div>
+
+      </div>
+
+    </div>
 
 
     <button
-      id="enterGame"
+      id="playGameBtn"
       class="btn primary"
+      style="
+        display:block;
+        margin:20px auto 0;
+      "
     >
-      ورود به بازی
+      شروع بازی
     </button>
 
   </div>
 
 </div>
-
-
-
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
-<footer>
-
-  <div class="container">
-
-    <p>
-      © <span id="year"></span>
-      عشاق
-    </p>
-
-  </div>
-
-</footer>
-
-
-
-<script src="script.js"></script>
-
-</body>
-</html>
