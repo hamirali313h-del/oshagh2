@@ -9,178 +9,209 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    body{
-      min-height:100vh;
-      background:
-        radial-gradient(circle at 80% 10%,rgba(40,140,220,.12),transparent 30%),
-        #f4f9fd;
+    .admin-page {
+      min-height: 100vh;
+      padding: 70px 0;
     }
 
-    .admin-page{
-      padding:70px 0 100px;
+    .admin-box {
+      max-width: 850px;
+      margin: auto;
+      background: rgba(255,255,255,.9);
+      border: 1px solid #d8e5ee;
+      border-radius: 28px;
+      padding: 35px;
+      box-shadow: 0 25px 70px rgba(31,78,112,.12);
     }
 
-    .admin-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:20px;
-      margin-bottom:35px;
+    .admin-header {
+      text-align: center;
+      margin-bottom: 35px;
     }
 
-    .admin-title{
-      display:flex;
-      align-items:center;
-      gap:15px;
+    .admin-header .icon {
+      width: 75px;
+      height: 75px;
+      margin: auto auto 15px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: #e5f2f9;
+      color: #3185bd;
+      font-size: 30px;
     }
 
-    .admin-logo{
-      width:58px;
-      height:58px;
-      object-fit:contain;
-      background:white;
-      border-radius:16px;
-      padding:7px;
-      box-shadow:0 8px 25px rgba(30,100,160,.1);
+    .admin-header h1 {
+      font-size: 27px;
+      color: #193d58;
     }
 
-    .admin-title h1{
-      font-size:27px;
-      margin:0 0 5px;
+    .admin-header p {
+      margin-top: 5px;
+      font-size: 10px;
+      color: #7c919f;
     }
 
-    .admin-title p{
-      color:#71889a;
-      font-size:11px;
-      margin:0;
+    .admin-login {
+      max-width: 400px;
+      margin: auto;
     }
 
-    .logout-btn{
-      padding:10px 17px;
-      border-radius:12px;
-      background:#fff;
-      border:1px solid #d7e5ef;
-      color:#667d8e;
-      font-family:inherit;
-      cursor:pointer;
-    }
-
-    .admin-card{
-      background:#fff;
-      border:1px solid #dce8f2;
-      border-radius:24px;
-      padding:28px;
-      margin-bottom:22px;
-      box-shadow:0 10px 35px rgba(25,85,135,.06);
-    }
-
-    .admin-card h2{
-      font-size:19px;
-      margin-bottom:20px;
-    }
-
-    .admin-form{
-      display:grid;
-      gap:15px;
-    }
-
-    .admin-form label{
-      font-size:11px;
-      font-weight:600;
-      color:#526b7d;
-    }
-
+    .admin-login input,
     .admin-form input,
     .admin-form textarea,
-    .admin-form select{
-      width:100%;
-      margin-top:7px;
-      padding:12px 14px;
-      border:1px solid #d8e5ee;
-      border-radius:12px;
-      background:#fafdff;
-      color:#18324a;
-      font-family:inherit;
-      outline:none;
+    .admin-form select {
+      width: 100%;
+      border: 1px solid #d6e3eb;
+      background: #f9fcfe;
+      border-radius: 13px;
+      padding: 13px 15px;
+      outline: none;
+      font-size: 11px;
+      margin-bottom: 12px;
     }
 
-    .admin-form textarea{
-      min-height:130px;
-      resize:vertical;
-      line-height:2;
-    }
-
+    .admin-login input:focus,
     .admin-form input:focus,
     .admin-form textarea:focus,
-    .admin-form select:focus{
-      border-color:#68a9dc;
-      box-shadow:0 0 0 4px rgba(25,118,210,.07);
+    .admin-form select:focus {
+      border-color: #62a6d2;
     }
 
-    .file-box{
-      padding:18px;
-      border:1px dashed #b9d2e5;
-      border-radius:15px;
-      background:#f8fbfd;
+    .admin-login .btn {
+      width: 100%;
     }
 
-    .file-box input{
-      margin-top:10px;
-      border:0;
-      padding:0;
-      background:transparent;
+    .admin-error {
+      min-height: 20px;
+      margin-top: 8px;
+      color: #d65763;
+      font-size: 9px;
+      text-align: center;
     }
 
-    .form-message{
-      min-height:22px;
-      font-size:11px;
+    .dashboard {
+      display: none;
     }
 
-    .form-message.success{
-      color:#168654;
+    .dashboard.show {
+      display: block;
     }
 
-    .form-message.error{
-      color:#d24f5c;
+    .dashboard-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 25px;
+      margin-bottom: 25px;
+      border-bottom: 1px solid #e0e9ef;
     }
 
-    .admin-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:22px;
+    .dashboard-top h2 {
+      font-size: 21px;
+      color: #244a63;
     }
 
-    .admin-note{
-      color:#71889a;
-      font-size:10px;
-      line-height:2;
-      margin-top:15px;
+    .dashboard-top p {
+      font-size: 9px;
+      color: #8094a2;
     }
 
-    @media(max-width:700px){
+    .logout-btn {
+      border: 1px solid #d3e1e9;
+      background: #f5f9fb;
+      color: #667e8e;
+      padding: 8px 13px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 9px;
+    }
 
-      .admin-page{
-        padding:45px 0;
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 25px;
+    }
+
+    .admin-tab {
+      border: 1px solid #d5e3eb;
+      background: #f7fbfd;
+      color: #60798b;
+      padding: 9px 17px;
+      border-radius: 11px;
+      font-family: inherit;
+      font-size: 10px;
+    }
+
+    .admin-tab.active {
+      background: #3688be;
+      border-color: #3688be;
+      color: white;
+    }
+
+    .admin-panel {
+      display: none;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .admin-form label {
+      display: block;
+      color: #486a7e;
+      font-size: 10px;
+      margin-bottom: 6px;
+    }
+
+    .admin-form textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .admin-status {
+      min-height: 25px;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 9px;
+    }
+
+    .back-home {
+      display: block;
+      width: fit-content;
+      margin: 25px auto 0;
+      color: #658092;
+      font-size: 9px;
+    }
+
+    @media(max-width:650px) {
+      .admin-page {
+        padding: 30px 0;
       }
 
-      .admin-header{
-        align-items:flex-start;
+      .admin-box {
+        padding: 22px;
       }
 
-      .admin-grid{
-        grid-template-columns:1fr;
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
       }
 
-      .admin-card{
-        padding:20px;
+      .dashboard-top {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
-      .admin-title h1{
-        font-size:22px;
-      }
-
-      .logout-btn{
-        font-size:10px;
+      .admin-tabs {
+        flex-wrap: wrap;
       }
     }
   </style>
@@ -188,305 +219,511 @@
 
 <body>
 
-  <main class="admin-page">
+<div class="watermarks">
+  <span>یاریکون</span>
+  <span>ادرکنی</span>
+  <span>جوقاد</span>
+  <span>26 85</span>
+  <span>عشاق</span>
+  <span>یاریکون</span>
+  <span>جوقاد</span>
+  <span>26 85</span>
+</div>
 
-    <div class="container">
 
-      <header class="admin-header">
+<main class="admin-page">
 
-        <div class="admin-title">
+  <div class="container">
 
-          <img
-            src="logo.png"
-            class="admin-logo"
-            alt="عشاق"
-          >
+    <div class="admin-box">
 
-          <div>
-            <h1>پنل مدیریت</h1>
-            <p>مدیریت مطالب و موزیک عشاق</p>
+      <!-- LOGIN -->
+
+      <div id="adminLogin">
+
+        <div class="admin-header">
+
+          <div class="icon">
+            ⚿
           </div>
 
-        </div>
+          <h1>ورود به پنل مدیریت</h1>
 
-        <button
-          id="logoutBtn"
-          class="logout-btn"
-          type="button"
-        >
-          خروج
-        </button>
-
-      </header>
-
-
-      <!-- وضعیت ورود -->
-
-      <div
-        id="authMessage"
-        class="admin-card"
-      >
-        در حال بررسی دسترسی...
-      </div>
-
-
-      <!-- فرم‌ها -->
-
-      <div
-        id="adminContent"
-        style="display:none;"
-      >
-
-        <div class="admin-grid">
-
-
-          <!-- =====================
-               POST
-          ====================== -->
-
-          <section class="admin-card">
-
-            <h2>
-              افزودن مطلب
-            </h2>
-
-            <form
-              id="postForm"
-              class="admin-form"
-            >
-
-              <label>
-                عنوان مطلب
-
-                <input
-                  id="postTitle"
-                  type="text"
-                  maxlength="200"
-                  placeholder="عنوان مطلب"
-                  required
-                >
-
-              </label>
-
-
-              <label>
-                متن مطلب
-
-                <textarea
-                  id="postContent"
-                  placeholder="متن مطلب..."
-                ></textarea>
-
-              </label>
-
-
-              <label>
-                نوع فایل
-
-                <select id="postMediaType">
-
-                  <option value="image">
-                    تصویر
-                  </option>
-
-                  <option value="video">
-                    ویدیو
-                  </option>
-
-                </select>
-
-              </label>
-
-
-              <div class="file-box">
-
-                <label>
-                  فایل تصویر / ویدیو
-
-                  <input
-                    id="postFile"
-                    type="file"
-                    accept="image/*,video/*"
-                  >
-
-                </label>
-
-              </div>
-
-
-              <button
-                class="btn primary"
-                type="submit"
-              >
-                انتشار مطلب
-              </button>
-
-
-              <div
-                id="postMessage"
-                class="form-message"
-              ></div>
-
-            </form>
-
-          </section>
-
-
-          <!-- =====================
-               MUSIC
-          ====================== -->
-
-          <section class="admin-card">
-
-            <h2>
-              افزودن موزیک
-            </h2>
-
-            <form
-              id="musicForm"
-              class="admin-form"
-            >
-
-              <label>
-                نام آهنگ
-
-                <input
-                  id="musicTitle"
-                  type="text"
-                  maxlength="200"
-                  placeholder="نام آهنگ"
-                  required
-                >
-
-              </label>
-
-
-              <label>
-                خواننده / سازنده
-
-                <input
-                  id="musicArtist"
-                  type="text"
-                  maxlength="150"
-                  placeholder="عشاق"
-                >
-
-              </label>
-
-
-              <div class="file-box">
-
-                <label>
-                  فایل آهنگ
-
-                  <input
-                    id="musicFile"
-                    type="file"
-                    accept="audio/*"
-                    required
-                  >
-
-                </label>
-
-              </div>
-
-
-              <div class="file-box">
-
-                <label>
-                  کاور آهنگ
-
-                  <input
-                    id="musicCover"
-                    type="file"
-                    accept="image/*"
-                  >
-
-                </label>
-
-              </div>
-
-
-              <button
-                class="btn primary"
-                type="submit"
-              >
-                افزودن آهنگ
-              </button>
-
-
-              <div
-                id="musicMessage"
-                class="form-message"
-              ></div>
-
-            </form>
-
-          </section>
-
-        </div>
-
-
-        <div class="admin-card">
-
-          <h2>
-            راهنما
-          </h2>
-
-          <p class="admin-note">
-            از همین پنل می‌توانی مطالب، تصاویر، ویدیوها و آهنگ‌ها را
-            اضافه کنی. فایل‌ها مستقیماً در فضای ذخیره‌سازی سایت قرار
-            می‌گیرند و اطلاعات آن‌ها در دیتابیس ثبت می‌شود.
+          <p>
+            این بخش فقط برای مدیر سایت است
           </p>
 
         </div>
 
+
+        <div class="admin-login">
+
+          <input
+            id="adminPassword"
+            type="password"
+            placeholder="رمز مدیریت"
+            autocomplete="off"
+          >
+
+          <button
+            id="adminLoginButton"
+            class="btn primary"
+          >
+            ورود به پنل
+          </button>
+
+          <div
+            id="adminLoginError"
+            class="admin-error"
+          ></div>
+
+        </div>
+
       </div>
+
+
+      <!-- DASHBOARD -->
+
+      <div
+        id="dashboard"
+        class="dashboard"
+      >
+
+        <div class="dashboard-top">
+
+          <div>
+
+            <h2>
+              پنل مدیریت عشاق
+            </h2>
+
+            <p>
+              مدیریت مطالب و موزیک‌های سایت
+            </p>
+
+          </div>
+
+          <button
+            id="logoutButton"
+            class="logout-btn"
+          >
+            خروج
+          </button>
+
+        </div>
+
+
+        <!-- TABS -->
+
+        <div class="admin-tabs">
+
+          <button
+            class="admin-tab active"
+            data-panel="postPanel"
+          >
+            افزودن مطلب
+          </button>
+
+          <button
+            class="admin-tab"
+            data-panel="musicPanel"
+          >
+            افزودن موزیک
+          </button>
+
+        </div>
+
+
+        <!-- POST -->
+
+        <section
+          id="postPanel"
+          class="admin-panel active"
+        >
+
+          <form
+            id="postForm"
+            class="admin-form"
+          >
+
+            <div class="form-row">
+
+              <div>
+
+                <label>
+                  عنوان مطلب
+                </label>
+
+                <input
+                  id="postTitle"
+                  type="text"
+                  placeholder="عنوان مطلب"
+                  required
+                >
+
+              </div>
+
+
+              <div>
+
+                <label>
+                  تصویر مطلب
+                </label>
+
+                <input
+                  id="postImage"
+                  type="url"
+                  placeholder="آدرس تصویر"
+                >
+
+              </div>
+
+            </div>
+
+
+            <label>
+              متن مطلب
+            </label>
+
+            <textarea
+              id="postContent"
+              placeholder="متن مطلب را بنویسید..."
+              required
+            ></textarea>
+
+
+            <button
+              type="submit"
+              class="btn primary"
+            >
+              انتشار مطلب
+            </button>
+
+
+            <div
+              id="postStatus"
+              class="admin-status"
+            ></div>
+
+          </form>
+
+        </section>
+
+
+        <!-- MUSIC -->
+
+        <section
+          id="musicPanel"
+          class="admin-panel"
+        >
+
+          <form
+            id="musicForm"
+            class="admin-form"
+          >
+
+            <div class="form-row">
+
+              <div>
+
+                <label>
+                  نام موزیک
+                </label>
+
+                <input
+                  id="musicTitle"
+                  type="text"
+                  placeholder="نام آهنگ"
+                  required
+                >
+
+              </div>
+
+
+              <div>
+
+                <label>
+                  نام خواننده
+                </label>
+
+                <input
+                  id="musicArtist"
+                  type="text"
+                  placeholder="نام خواننده"
+                >
+
+              </div>
+
+            </div>
+
+
+            <label>
+              آدرس فایل موزیک
+            </label>
+
+            <input
+              id="musicUrl"
+              type="url"
+              placeholder="https://..."
+              required
+            >
+
+
+            <label>
+              آدرس کاور
+            </label>
+
+            <input
+              id="musicCover"
+              type="url"
+              placeholder="https://..."
+            >
+
+
+            <button
+              type="submit"
+              class="btn primary"
+            >
+              انتشار موزیک
+            </button>
+
+
+            <div
+              id="musicStatus"
+              class="admin-status"
+            ></div>
+
+          </form>
+
+        </section>
+
+      </div>
+
+
+      <a
+        href="index.html"
+        class="back-home"
+      >
+        ← بازگشت به سایت
+      </a>
 
     </div>
 
-  </main>
+  </div>
+
+</main>
 
 
-  <script>
+<script>
 
-    /*
-      اتصال Supabase در مرحله بعد
-      به این فایل اضافه خواهد شد.
-    */
+  /* ============================================
+     ADMIN LOGIN
+  ============================================ */
 
-    const authMessage =
-      document.getElementById("authMessage");
+  const ADMIN_PASSWORD = "rikon269";
 
-    const adminContent =
-      document.getElementById("adminContent");
+  const loginBox =
+    document.getElementById("adminLogin");
 
+  const dashboard =
+    document.getElementById("dashboard");
 
-    /*
-      فعلاً فقط ظاهر پنل ساخته شده.
-      بعد از اتصال Supabase،
-      این قسمت دسترسی واقعی مدیر را بررسی می‌کند.
-    */
+  const passwordInput =
+    document.getElementById("adminPassword");
 
-    authMessage.innerHTML = `
-      <strong>پنل مدیریت آماده است.</strong>
-      <p class="admin-note">
-        اتصال امن به Supabase در مرحله بعد فعال می‌شود.
-      </p>
-    `;
+  const loginButton =
+    document.getElementById("adminLoginButton");
 
-    adminContent.style.display = "block";
+  const loginError =
+    document.getElementById("adminLoginError");
+
+  const logoutButton =
+    document.getElementById("logoutButton");
 
 
-    document
-      .getElementById("logoutBtn")
-      .addEventListener("click", () => {
+  function showDashboard() {
 
-        window.location.href = "index.html";
+    loginBox.style.display = "none";
 
-      });
+    dashboard.classList.add("show");
 
-  </script>
+  }
+
+
+  function showLogin() {
+
+    loginBox.style.display = "block";
+
+    dashboard.classList.remove("show");
+
+  }
+
+
+  loginButton.addEventListener(
+    "click",
+    () => {
+
+      const password =
+        passwordInput.value.trim();
+
+
+      if (password === ADMIN_PASSWORD) {
+
+        sessionStorage.setItem(
+          "oshaghAdmin",
+          "true"
+        );
+
+        showDashboard();
+
+      } else {
+
+        loginError.textContent =
+          "رمز مدیریت اشتباه است.";
+
+      }
+
+    }
+  );
+
+
+  passwordInput.addEventListener(
+    "keydown",
+    event => {
+
+      if (event.key === "Enter") {
+        loginButton.click();
+      }
+
+    }
+  );
+
+
+  logoutButton.addEventListener(
+    "click",
+    () => {
+
+      sessionStorage.removeItem(
+        "oshaghAdmin"
+      );
+
+      showLogin();
+
+    }
+  );
+
+
+  if (
+    sessionStorage.getItem("oshaghAdmin")
+    === "true"
+  ) {
+
+    showDashboard();
+
+  }
+
+
+  /* ============================================
+     ADMIN TABS
+  ============================================ */
+
+  const adminTabs =
+    document.querySelectorAll(".admin-tab");
+
+  const adminPanels =
+    document.querySelectorAll(".admin-panel");
+
+
+  adminTabs.forEach(tab => {
+
+    tab.addEventListener(
+      "click",
+      () => {
+
+        adminTabs.forEach(item =>
+          item.classList.remove("active")
+        );
+
+        adminPanels.forEach(panel =>
+          panel.classList.remove("active")
+        );
+
+
+        tab.classList.add("active");
+
+
+        const panel =
+          document.getElementById(
+            tab.dataset.panel
+          );
+
+
+        if (panel) {
+          panel.classList.add("active");
+        }
+
+      }
+    );
+
+  });
+
+
+  /* ============================================
+     TEMPORARY POST FORM
+  ============================================ */
+
+  document
+    .getElementById("postForm")
+    .addEventListener(
+      "submit",
+      event => {
+
+        event.preventDefault();
+
+
+        const status =
+          document.getElementById("postStatus");
+
+
+        status.textContent =
+          "مطلب آماده انتشار است.";
+
+
+        status.style.color =
+          "#3688be";
+
+      }
+    );
+
+
+  /* ============================================
+     TEMPORARY MUSIC FORM
+  ============================================ */
+
+  document
+    .getElementById("musicForm")
+    .addEventListener(
+      "submit",
+      event => {
+
+        event.preventDefault();
+
+
+        const status =
+          document.getElementById("musicStatus");
+
+
+        status.textContent =
+          "موزیک آماده انتشار است.";
+
+
+        status.style.color =
+          "#3688be";
+
+      }
+    );
+
+</script>
 
 </body>
 </html>
