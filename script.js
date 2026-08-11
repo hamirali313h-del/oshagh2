@@ -1,858 +1,679 @@
-/* =========================================
-   OSHAGH - MAIN SCRIPT
-========================================= */
+/* =========================================================
+   OSHAGH WEBSITE - MAIN SCRIPT
+========================================================= */
 
-/* ---------- Navigation ---------- */
+document.addEventListener("DOMContentLoaded", () => {
 
-const navLinks = document.querySelectorAll(".nav a");
+  /* =======================================================
+     NAVIGATION
+  ======================================================= */
 
-navLinks.forEach(link => {
-  link.addEventListener("click", () => {
-    navLinks.forEach(item => item.classList.remove("active"));
-    link.classList.add("active");
+  const navLinks = document.querySelectorAll(".nav a");
+
+  navLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      navLinks.forEach(item => item.classList.remove("active"));
+      link.classList.add("active");
+    });
   });
-});
 
 
-/* =========================================
-   GAME LOGIN
-========================================= */
+  /* =======================================================
+     GAME MODAL
+  ======================================================= */
 
-const gameModal = document.getElementById("gameModal");
-const playGameBtn = document.getElementById("playGameBtn");
-const closeGameBtn = document.getElementById("closeGame");
-const enterGameBtn = document.getElementById("enterGame");
+  const gameModal = document.getElementById("gameModal");
+  const playGameBtn = document.getElementById("playGameBtn");
+  const closeGameBtn = document.getElementById("closeGame");
+  const enterGameBtn = document.getElementById("enterGame");
 
-const playerNameInput = document.getElementById("playerName");
-const secretWordInput = document.getElementById("secretWord");
-const loginError = document.getElementById("loginError");
-
-
-function openGameModal() {
-
-  if (!gameModal) return;
-
-  gameModal.classList.add("show");
-  gameModal.setAttribute("aria-hidden", "false");
-
-  setTimeout(() => {
-    if (playerNameInput) {
-      playerNameInput.focus();
-    }
-  }, 150);
-}
+  const playerNameInput = document.getElementById("playerName");
+  const secretWordInput = document.getElementById("secretWord");
+  const loginError = document.getElementById("loginError");
 
 
-function closeGameModal() {
+  function openGameModal() {
+    if (!gameModal) return;
 
-  if (!gameModal) return;
+    gameModal.classList.add("show");
 
-  gameModal.classList.remove("show");
-  gameModal.setAttribute("aria-hidden", "true");
-
-  if (loginError) {
-    loginError.textContent = "";
+    setTimeout(() => {
+      if (playerNameInput) {
+        playerNameInput.focus();
+      }
+    }, 150);
   }
-}
 
 
-if (playGameBtn) {
-  playGameBtn.addEventListener("click", openGameModal);
-}
+  function closeGameModal() {
+    if (!gameModal) return;
+
+    gameModal.classList.remove("show");
+
+    if (loginError) {
+      loginError.textContent = "";
+    }
+  }
 
 
-if (closeGameBtn) {
-  closeGameBtn.addEventListener("click", closeGameModal);
-}
+  if (playGameBtn) {
+    playGameBtn.addEventListener("click", openGameModal);
+  }
 
 
-if (gameModal) {
+  if (closeGameBtn) {
+    closeGameBtn.addEventListener("click", closeGameModal);
+  }
 
-  gameModal.addEventListener("click", event => {
 
-    if (event.target === gameModal) {
+  if (gameModal) {
+    gameModal.addEventListener("click", event => {
+      if (event.target === gameModal) {
+        closeGameModal();
+      }
+    });
+  }
+
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
       closeGameModal();
     }
-
   });
 
-}
+
+  /* =======================================================
+     GAME LOGIN
+  ======================================================= */
+
+  if (enterGameBtn) {
+
+    enterGameBtn.addEventListener("click", () => {
+
+      const name = playerNameInput
+        ? playerNameInput.value.trim()
+        : "";
+
+      const word = secretWordInput
+        ? secretWordInput.value.trim()
+        : "";
 
 
-document.addEventListener("keydown", event => {
+      if (!name) {
 
-  if (event.key === "Escape") {
-    closeGameModal();
+        if (loginError) {
+          loginError.textContent =
+            "لطفاً نام خود را وارد کنید.";
+        }
+
+        return;
+      }
+
+
+      if (word !== "یاریکون") {
+
+        if (loginError) {
+          loginError.textContent =
+            "عبارت واردشده درست نیست.";
+        }
+
+        return;
+      }
+
+
+      sessionStorage.setItem(
+        "oshaghiPlayerName",
+        name
+      );
+
+
+      closeGameModal();
+
+
+      startGame(name);
+    });
   }
 
-});
+
+  /* =======================================================
+     GAME
+  ======================================================= */
+
+  const gameArea = document.getElementById("gameArea");
+  const gameBoard = document.getElementById("gameBoard");
+  const projectile = document.getElementById("gameProjectile");
+  const scoreElement = document.getElementById("gameScore");
+  const restartGameBtn = document.getElementById("restartGame");
 
 
-/* ---------- Game Login ---------- */
+  let score = 0;
+  let dragging = false;
+  let startX = 0;
+  let startY = 0;
 
-if (enterGameBtn) {
 
-  enterGameBtn.addEventListener("click", () => {
+  function startGame(name) {
 
-    const name = playerNameInput.value.trim();
-    const word = secretWordInput.value.trim();
+    if (!gameArea) return;
 
-    if (!name) {
+    gameArea.classList.add("show");
 
-      loginError.textContent =
-        "لطفاً نام خود را وارد کنید.";
+    gameArea.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
 
-      playerNameInput.focus();
 
-      return;
+    const playerNameElement =
+      document.getElementById("gamePlayerName");
+
+    if (playerNameElement) {
+      playerNameElement.textContent = name;
     }
 
 
-    if (word !== "یاریکون") {
+    resetGame();
+  }
 
-      loginError.textContent =
-        "عبارت واردشده درست نیست.";
 
-      secretWordInput.focus();
+  function resetGame() {
 
-      return;
+    score = 0;
+
+    updateScore();
+
+    if (projectile) {
+
+      projectile.style.left = "50%";
+      projectile.style.bottom = "42px";
+      projectile.style.top = "auto";
+      projectile.style.transform =
+        "translateX(-50%)";
+
     }
+  }
 
 
-    /*
-      فعلاً نام فقط برای همین نشست نگه داشته می‌شود.
-      هیچ حساب کاربری ساخته نمی‌شود.
-    */
+  function updateScore() {
 
-    sessionStorage.setItem(
-      "oshaghiPlayerName",
-      name
+    if (scoreElement) {
+      scoreElement.textContent = score;
+    }
+  }
+
+
+  function showScore(target) {
+
+    if (!target) return;
+
+    const pop = document.createElement("div");
+
+    pop.className = "score-pop";
+    pop.textContent = "+10";
+
+    target.appendChild(pop);
+
+    setTimeout(() => {
+      pop.remove();
+    }, 2000);
+  }
+
+
+  function hitTarget(target) {
+
+    if (!target) return;
+
+    target.classList.add("hit");
+
+    score += 10;
+
+    updateScore();
+
+    showScore(target);
+
+    setTimeout(() => {
+      target.classList.remove("hit");
+    }, 350);
+  }
+
+
+  function checkCollision() {
+
+    if (!projectile || !gameBoard) return;
+
+    const projectileRect =
+      projectile.getBoundingClientRect();
+
+    const targets =
+      document.querySelectorAll(".target");
+
+
+    targets.forEach(target => {
+
+      const targetRect =
+        target.getBoundingClientRect();
+
+
+      const collision =
+        projectileRect.left <
+          targetRect.right &&
+        projectileRect.right >
+          targetRect.left &&
+        projectileRect.top <
+          targetRect.bottom &&
+        projectileRect.bottom >
+          targetRect.top;
+
+
+      if (collision) {
+
+        hitTarget(target);
+
+        projectile.style.left = "50%";
+        projectile.style.bottom = "42px";
+        projectile.style.top = "auto";
+        projectile.style.transform =
+          "translateX(-50%)";
+
+      }
+
+    });
+  }
+
+
+  if (projectile && gameBoard) {
+
+    projectile.addEventListener(
+      "pointerdown",
+      event => {
+
+        dragging = true;
+
+        startX = event.clientX;
+        startY = event.clientY;
+
+        projectile.classList.add("dragging");
+
+        projectile.setPointerCapture(
+          event.pointerId
+        );
+      }
     );
 
 
-    closeGameModal();
+    projectile.addEventListener(
+      "pointermove",
+      event => {
+
+        if (!dragging) return;
+
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
 
 
-    /*
-      وقتی فایل بازی واقعی را اضافه کنیم،
-      اینجا بازی باز خواهد شد.
-    */
-
-    openGame();
-
-  });
-
-}
+        const maxX =
+          gameBoard.clientWidth / 2 - 30;
 
 
-/* ---------- Game ---------- */
-
-function openGame() {
-
-  /*
-    فعلاً پیام موقت است.
-    در مرحله بعد موتور کامل «رمی جقرات»
-    اینجا قرار می‌گیرد.
-  */
-
-  alert(
-    `خوش آمدی ${sessionStorage.getItem("oshaghiPlayerName")}!\n\n` +
-    "بازی رمی جقرات آماده ساخت است."
-  );
-
-}
+        const limitedX =
+          Math.max(
+            -maxX,
+            Math.min(maxX, dx)
+          );
 
 
-/* =========================================
-   MUSIC PLAYER
-========================================= */
-
-const audioPlayer =
-  document.getElementById("audioPlayer");
-
-const playMusicBtn =
-  document.getElementById("playMusic");
-
-const prevTrackBtn =
-  document.getElementById("prevTrack");
-
-const nextTrackBtn =
-  document.getElementById("nextTrack");
-
-const playerTitle =
-  document.getElementById("playerTitle");
-
-const playerCover =
-  document.getElementById("playerCover");
-
-const playerProgress =
-  document.getElementById("playerProgress");
-
-const currentTimeElement =
-  document.getElementById("currentTime");
-
-const durationElement =
-  document.getElementById("duration");
+        const limitedY =
+          Math.max(
+            -180,
+            Math.min(50, dy)
+          );
 
 
-let musicTracks = [];
+        projectile.style.transform =
+          `translateX(calc(-50% + ${limitedX}px))`;
 
-let currentTrackIndex = 0;
+
+        projectile.style.bottom =
+          `${42 - limitedY}px`;
+      }
+    );
 
 
-/* ---------- Format Time ---------- */
+    projectile.addEventListener(
+      "pointerup",
+      event => {
 
-function formatTime(seconds) {
+        if (!dragging) return;
 
-  if (!Number.isFinite(seconds)) {
-    return "00:00";
+        dragging = false;
+
+        projectile.classList.remove("dragging");
+
+        projectile.releasePointerCapture(
+          event.pointerId
+        );
+
+
+        launchProjectile();
+      }
+    );
   }
 
-  const minutes =
-    Math.floor(seconds / 60);
 
-  const remainingSeconds =
-    Math.floor(seconds % 60);
+  function launchProjectile() {
 
-  return (
-    String(minutes).padStart(2, "0") +
-    ":" +
-    String(remainingSeconds).padStart(2, "0")
-  );
-
-}
+    if (!projectile || !gameBoard) return;
 
 
-/* ---------- Load Track ---------- */
+    const startRect =
+      projectile.getBoundingClientRect();
 
-function loadTrack(index, autoplay = false) {
+    const boardRect =
+      gameBoard.getBoundingClientRect();
 
-  if (!musicTracks.length) {
-    return;
+
+    const startLeft =
+      startRect.left -
+      boardRect.left;
+
+
+    const startBottom =
+      boardRect.bottom -
+      startRect.bottom;
+
+
+    projectile.style.transition =
+      "left .75s ease-out, bottom .75s ease-out";
+
+
+    projectile.style.left =
+      `${startLeft}px`;
+
+
+    projectile.style.bottom =
+      `${Math.min(
+        gameBoard.clientHeight - 60,
+        startBottom + 280
+      )}px`;
+
+
+    setTimeout(() => {
+
+      checkCollision();
+
+      projectile.style.transition = "none";
+
+      projectile.style.left = "50%";
+      projectile.style.bottom = "42px";
+      projectile.style.top = "auto";
+      projectile.style.transform =
+        "translateX(-50%)";
+
+    }, 800);
   }
 
-  currentTrackIndex = index;
 
-  const track =
-    musicTracks[currentTrackIndex];
+  if (restartGameBtn) {
+    restartGameBtn.addEventListener(
+      "click",
+      resetGame
+    );
+  }
 
-  if (!track) {
-    return;
+
+  /* =======================================================
+     MUSIC PLAYER
+  ======================================================= */
+
+  const audioPlayer =
+    document.getElementById("audioPlayer");
+
+  const musicPlayButton =
+    document.getElementById("musicPlayButton");
+
+  const musicProgress =
+    document.getElementById("musicProgress");
+
+  const currentTrackTitle =
+    document.getElementById("currentTrackTitle");
+
+
+  let currentMusic = null;
+
+
+  function playMusic(src, title) {
+
+    if (!audioPlayer) return;
+
+
+    currentMusic = src;
+
+    audioPlayer.src = src;
+
+    audioPlayer.play().catch(() => {});
+
+
+    if (currentTrackTitle) {
+      currentTrackTitle.textContent =
+        title || "موزیک عشاق";
+    }
+
+
+    if (musicPlayButton) {
+      musicPlayButton.textContent = "Ⅱ";
+    }
+  }
+
+
+  if (musicPlayButton && audioPlayer) {
+
+    musicPlayButton.addEventListener(
+      "click",
+      () => {
+
+        if (!audioPlayer.src) return;
+
+
+        if (audioPlayer.paused) {
+
+          audioPlayer.play();
+
+          musicPlayButton.textContent = "Ⅱ";
+
+        } else {
+
+          audioPlayer.pause();
+
+          musicPlayButton.textContent = "▶";
+
+        }
+      }
+    );
   }
 
 
   if (audioPlayer) {
-    audioPlayer.src = track.url;
-    audioPlayer.load();
-  }
+
+    audioPlayer.addEventListener(
+      "timeupdate",
+      () => {
+
+        if (!audioPlayer.duration) return;
 
 
-  if (playerTitle) {
-    playerTitle.textContent =
-      track.title || "بدون عنوان";
-  }
+        const percent =
+          (audioPlayer.currentTime /
+            audioPlayer.duration) * 100;
 
 
-  if (playerCover) {
-    playerCover.src =
-      track.cover || "logo.png";
-  }
-
-
-  if (playerProgress) {
-    playerProgress.style.width = "0%";
-  }
-
-
-  if (currentTimeElement) {
-    currentTimeElement.textContent = "00:00";
-  }
-
-
-  if (durationElement) {
-    durationElement.textContent = "00:00";
-  }
-
-
-  document
-    .querySelectorAll(".music-item")
-    .forEach(item => {
-
-      item.classList.remove("active");
-
-    });
-
-
-  const activeItem =
-    document.querySelector(
-      `.music-item[data-index="${index}"]`
+        if (musicProgress) {
+          musicProgress.style.width =
+            `${percent}%`;
+        }
+      }
     );
 
 
-  if (activeItem) {
-    activeItem.classList.add("active");
-  }
-
-
-  if (autoplay && audioPlayer) {
-
-    audioPlayer
-      .play()
-      .catch(() => {});
-
-  }
-
-}
-
-
-/* ---------- Play / Pause ---------- */
-
-if (playMusicBtn) {
-
-  playMusicBtn.addEventListener("click", () => {
-
-    if (!audioPlayer || !musicTracks.length) {
-      return;
-    }
-
-
-    if (audioPlayer.paused) {
-
-      audioPlayer
-        .play()
-        .catch(() => {});
-
-    } else {
-
-      audioPlayer.pause();
-
-    }
-
-  });
-
-}
-
-
-/* ---------- Audio Events ---------- */
-
-if (audioPlayer) {
-
-  audioPlayer.addEventListener("play", () => {
-
-    if (playMusicBtn) {
-      playMusicBtn.textContent = "Ⅱ";
-    }
-
-  });
-
-
-  audioPlayer.addEventListener("pause", () => {
-
-    if (playMusicBtn) {
-      playMusicBtn.textContent = "▶";
-    }
-
-  });
-
-
-  audioPlayer.addEventListener("timeupdate", () => {
-
-    if (!audioPlayer.duration) {
-      return;
-    }
-
-
-    const percentage =
-      (audioPlayer.currentTime /
-        audioPlayer.duration) * 100;
-
-
-    if (playerProgress) {
-      playerProgress.style.width =
-        percentage + "%";
-    }
-
-
-    if (currentTimeElement) {
-      currentTimeElement.textContent =
-        formatTime(audioPlayer.currentTime);
-    }
-
-  });
-
-
-  audioPlayer.addEventListener("loadedmetadata", () => {
-
-    if (durationElement) {
-
-      durationElement.textContent =
-        formatTime(audioPlayer.duration);
-
-    }
-
-  });
-
-
-  audioPlayer.addEventListener("ended", () => {
-
-    if (!musicTracks.length) {
-      return;
-    }
-
-
-    let next =
-      currentTrackIndex + 1;
-
-
-    if (next >= musicTracks.length) {
-      next = 0;
-    }
-
-
-    loadTrack(next, true);
-
-  });
-
-}
-
-
-/* ---------- Previous ---------- */
-
-if (prevTrackBtn) {
-
-  prevTrackBtn.addEventListener("click", () => {
-
-    if (!musicTracks.length) {
-      return;
-    }
-
-
-    let previous =
-      currentTrackIndex - 1;
-
-
-    if (previous < 0) {
-      previous = musicTracks.length - 1;
-    }
-
-
-    loadTrack(previous, true);
-
-  });
-
-}
-
-
-/* ---------- Next ---------- */
-
-if (nextTrackBtn) {
-
-  nextTrackBtn.addEventListener("click", () => {
-
-    if (!musicTracks.length) {
-      return;
-    }
-
-
-    let next =
-      currentTrackIndex + 1;
-
-
-    if (next >= musicTracks.length) {
-      next = 0;
-    }
-
-
-    loadTrack(next, true);
-
-  });
-
-}
-
-
-/* ---------- Progress Click ---------- */
-
-const progressContainer =
-  document.querySelector(".player-progress");
-
-
-if (progressContainer) {
-
-  progressContainer.addEventListener("click", event => {
-
-    if (
-      !audioPlayer ||
-      !audioPlayer.duration
-    ) {
-      return;
-    }
-
-
-    const rect =
-      progressContainer.getBoundingClientRect();
-
-
-    const percent =
-      (event.clientX - rect.left) /
-      rect.width;
-
-
-    audioPlayer.currentTime =
-      audioPlayer.duration *
-      Math.max(0, Math.min(1, percent));
-
-  });
-
-}
-
-
-/* =========================================
-   MUSIC LIST
-========================================= */
-
-function renderMusicList(tracks) {
-
-  const musicList =
-    document.getElementById("musicList");
-
-
-  if (!musicList) {
-    return;
-  }
-
-
-  musicList.innerHTML = "";
-
-
-  if (!tracks.length) {
-
-    musicList.innerHTML = `
-
-      <div class="music-empty">
-
-        <div class="music-empty-icon">
-          ♪
-        </div>
-
-        <h3>آرشیو موسیقی</h3>
-
-        <p>
-          هنوز آهنگی اضافه نشده است.
-        </p>
-
-      </div>
-
-    `;
-
-    return;
-  }
-
-
-  tracks.forEach((track, index) => {
-
-    const item =
-      document.createElement("div");
-
-
-    item.className = "music-item";
-
-    item.dataset.index = index;
-
-
-    item.innerHTML = `
-
-      <img
-        class="music-cover"
-        src="${track.cover || "logo.png"}"
-        alt="کاور"
-      >
-
-      <div class="music-info">
-
-        <h3>
-          ${escapeHTML(track.title || "بدون عنوان")}
-        </h3>
-
-        <span>
-          ${escapeHTML(track.artist || "عشاق")}
-        </span>
-
-      </div>
-
-      <div class="music-actions">
-
-        <button
-          class="music-play"
-          type="button"
-          aria-label="پخش"
-        >
-          ▶
-        </button>
-
-        ${
-          track.url
-            ? `
-              <a
-                class="music-download"
-                href="${track.url}"
-                download
-                title="دانلود"
-              >
-                ↓
-              </a>
-            `
-            : ""
+    audioPlayer.addEventListener(
+      "ended",
+      () => {
+
+        if (musicPlayButton) {
+          musicPlayButton.textContent = "▶";
         }
 
-      </div>
+        if (musicProgress) {
+          musicProgress.style.width = "0%";
+        }
+      }
+    );
+  }
 
-    `;
+
+  /* =======================================================
+     MUSIC ITEMS
+  ======================================================= */
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      const button =
+        event.target.closest(
+          ".music-play-btn"
+        );
 
 
-    const playButton =
-      item.querySelector(".music-play");
+      if (!button) return;
 
 
-    playButton.addEventListener(
+      const item =
+        button.closest(".music-item");
+
+
+      if (!item) return;
+
+
+      const source =
+        item.dataset.src;
+
+
+      const title =
+        item.dataset.title ||
+        item.querySelector("h4")?.textContent ||
+        "موزیک عشاق";
+
+
+      if (!source) return;
+
+
+      document
+        .querySelectorAll(".music-item")
+        .forEach(el => {
+          el.classList.remove("playing");
+        });
+
+
+      item.classList.add("playing");
+
+
+      playMusic(source, title);
+    }
+  );
+
+
+  /* =======================================================
+     MUSIC PROGRESS CLICK
+  ======================================================= */
+
+  const progressContainer =
+    document.getElementById(
+      "musicProgressContainer"
+    );
+
+
+  if (progressContainer && audioPlayer) {
+
+    progressContainer.addEventListener(
       "click",
       event => {
 
-        event.stopPropagation();
+        if (!audioPlayer.duration) return;
 
-        loadTrack(index, true);
 
+        const rect =
+          progressContainer.getBoundingClientRect();
+
+
+        const percent =
+          (event.clientX - rect.left) /
+          rect.width;
+
+
+        audioPlayer.currentTime =
+          audioPlayer.duration *
+          Math.max(0, Math.min(1, percent));
       }
+    );
+  }
+
+
+  /* =======================================================
+     ADMIN UPLOAD BUTTONS
+  ======================================================= */
+
+  const uploadLinks =
+    document.querySelectorAll(".upload-link");
+
+
+  uploadLinks.forEach(link => {
+
+    link.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+
+        window.location.href =
+          "admin.html";
+      }
+    );
+  });
+
+
+  /* =======================================================
+     LOAD SAVED PLAYER NAME
+  ======================================================= */
+
+  const savedName =
+    sessionStorage.getItem(
+      "oshaghiPlayerName"
     );
 
 
-    item.addEventListener("click", () => {
-
-      loadTrack(index, true);
-
-    });
-
-
-    musicList.appendChild(item);
-
-  });
-
-}
+  const gamePlayerName =
+    document.getElementById(
+      "gamePlayerName"
+    );
 
 
-/* =========================================
-   POSTS
-========================================= */
-
-function renderPosts(posts) {
-
-  const container =
-    document.getElementById("postsContainer");
-
-
-  if (!container) {
-    return;
+  if (savedName && gamePlayerName) {
+    gamePlayerName.textContent =
+      savedName;
   }
 
 
-  container.innerHTML = "";
+  /* =======================================================
+     YEAR
+  ======================================================= */
+
+  const year =
+    document.getElementById("year");
 
 
-  if (!posts.length) {
-
-    container.innerHTML = `
-
-      <article class="post-card empty-card">
-
-        <div class="empty-icon">
-          ع
-        </div>
-
-        <div>
-
-          <h3>
-            هنوز مطلبی منتشر نشده
-          </h3>
-
-          <p>
-            مطالب جدید از این بخش نمایش داده خواهند شد.
-          </p>
-
-        </div>
-
-      </article>
-
-    `;
-
-    return;
+  if (year) {
+    year.textContent =
+      new Date().getFullYear();
   }
 
-
-  posts.forEach(post => {
-
-    const article =
-      document.createElement("article");
-
-
-    article.className = "post-card";
-
-
-    let media = "";
-
-
-    if (post.media_url) {
-
-      if (post.media_type === "video") {
-
-        media = `
-
-          <div class="post-media">
-
-            <video
-              controls
-              preload="metadata"
-              src="${post.media_url}"
-            ></video>
-
-          </div>
-
-        `;
-
-      } else {
-
-        media = `
-
-          <div class="post-media">
-
-            <img
-              src="${post.media_url}"
-              alt="${escapeHTML(post.title || "مطلب عشاق")}"
-              loading="lazy"
-            >
-
-          </div>
-
-        `;
-
-      }
-
-    }
-
-
-    article.innerHTML = `
-
-      ${media}
-
-      <div class="post-content">
-
-        <div class="post-meta">
-
-          <span>
-            خبرگزاری عشاق
-          </span>
-
-          <span>
-            ${formatDate(post.created_at)}
-          </span>
-
-        </div>
-
-        <h3>
-          ${escapeHTML(post.title || "بدون عنوان")}
-        </h3>
-
-        <p>
-          ${escapeHTML(post.content || "")}
-        </p>
-
-      </div>
-
-    `;
-
-
-    container.appendChild(article);
-
-  });
-
-}
-
-
-/* =========================================
-   HELPERS
-========================================= */
-
-function escapeHTML(value) {
-
-  if (value === null || value === undefined) {
-    return "";
-  }
-
-
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-function formatDate(dateString) {
-
-  if (!dateString) {
-    return "";
-  }
-
-
-  const date =
-    new Date(dateString);
-
-
-  if (Number.isNaN(date.getTime())) {
-    return "";
-  }
-
-
-  return new Intl.DateTimeFormat(
-    "fa-IR",
-    {
-      year: "numeric",
-      month: "short",
-      day: "numeric"
-    }
-  ).format(date);
-
-}
-
-
-/* =========================================
-   TEMPORARY DATA
-========================================= */
-
-/*
-  فعلاً این آرایه‌ها خالی هستند.
-
-  در مرحله اتصال Supabase،
-  اطلاعات واقعی از دیتابیس خوانده می‌شوند.
-*/
-
-musicTracks = [];
-
-renderMusicList(musicTracks);
-
-renderPosts([]);
-
-
-/* =========================================
-   SUPABASE
-========================================= */
-
-/*
-  اتصال واقعی Supabase را در مرحله بعد
-  اضافه می‌کنیم.
-
-  فعلاً این قسمت را دست نمی‌زنیم.
-*/
-
-
-console.log("Oshagh website loaded successfully.");
+});
